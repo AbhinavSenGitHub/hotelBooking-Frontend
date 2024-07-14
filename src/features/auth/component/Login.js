@@ -13,7 +13,7 @@ const Login = () => {
 
         <div>
             <form className='w-screen flex  justify-center items-center'>
-                <div className='w-[400px] px-6 '>
+                <div className='w-[500px] px-6 '>
                     <div className='flex flex-col mb-2'>
                         <label className='text-xl text-gray-800'>Email</label>
                         <input className="border px-4 py-2 my-3 rounded-xl border-gray-300" type="email" placeholder='Username' />

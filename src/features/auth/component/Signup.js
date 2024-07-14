@@ -4,16 +4,14 @@ import { faGoogle, faSkype, faXTwitter } from '@fortawesome/free-brands-svg-icon
 import { Link } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useDispatch } from "react-redux"
+import { createUserAsync } from '../authSlice';
 const Signup = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
 
     const dispatch = useDispatch()
-    const onSubmit = (data) => {
-        console.log(data)
-        // dispatch((data) => {
-        //     console.log(data)
-        // })
+    const onSubmit = async (data) => {
+        dispatch(createUserAsync(data))
     }
     return (
         <div className="w-full mt-8">
@@ -24,7 +22,7 @@ const Signup = () => {
 
                 <div>
                     <form noValidate onSubmit={handleSubmit(onSubmit)} className='w-screen flex  justify-center items-center'>
-                        <div className='w-[400px] px-6 '>
+                        <div className='w-[500px] px-6 '>
                             <div className='flex flex-col mb-2'>
                                 <label className='text-xl text-gray-800'>Username</label>
                                 <input className="border px-4 py-2 my-3 rounded-xl border-gray-300" type="text" placeholder='Username'
