@@ -10,7 +10,7 @@ export const store = configureStore({
     // auth reducer
     auth: authReducer,
     authCookieReducer: authCookieSlice,
-    // add hotel
+    // add hotel    
     createHotelReducer: createHotelSlice,
     //add room
     createRoomReducer: createRoomSlice

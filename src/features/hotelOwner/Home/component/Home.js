@@ -5,6 +5,7 @@ import { faLocation } from "@fortawesome/free-solid-svg-icons"
 import GetHotel from './GetHotel'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import HotelCard from './HotelCard'
 
 const Home = () => {
 
@@ -22,7 +23,7 @@ const Home = () => {
     <div className=''>
       <div className='h-[500px] bg-[#003580] flex flex-wrap justify-around pt-[10vh]'>
 
-        <div className='text-white flex flex-col gap-6 px-10'>
+        <div className='text-white flex flex-col mt-10 gap-6 px-10'>
           <h1 className=' text-5xl'>Travel Made Easy, <br />Hosting Made Simple</h1>
           <p>Find your perfect stay or share your space with travelers. <br /> Our platform makes booking and hosting simple, fast, and reliable.</p>
           <div className='flex gap-4 my-3'>
@@ -71,6 +72,8 @@ const Home = () => {
       </div>
 
       <GetHotel />
+
+      <HotelCard/>
     </div>
   )
 }

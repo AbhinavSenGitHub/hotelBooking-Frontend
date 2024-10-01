@@ -18,6 +18,14 @@ export const addHotelAsync = createAsyncThunk(
   }  
 );  
 
+// export const fetchCitiesSlice = createAsyncThunk(
+//   'hotel/cities',
+//   async ({dfsdf}) => {
+    
+//   }
+// )
+
+
 // Create hotel slice  
 export const createHotelSlice = createSlice({  
   name: 'hotel',  
@@ -34,6 +42,7 @@ export const createHotelSlice = createSlice({
       })   
   },  
 });  
+
 
 // Selector to select the added hotel response  
 export const selectAddHotelRes = (state) => state.createHotelReducer.addHotelRes;  

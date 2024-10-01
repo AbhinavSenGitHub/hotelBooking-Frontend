@@ -8,7 +8,7 @@ import { fetchToken } from '../../../../../common/cookie';
 import { useNavigate } from "react-router-dom"
 const CreateHotelProfile = () => {
 
-    const geoName =  process.env.REACT_APP_GEO_NAMES_USERNAME
+    const geoName = process.env.REACT_APP_GEO_NAMES_USERNAME
     console.log("geoName", geoName)
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm()
 
@@ -16,27 +16,28 @@ const CreateHotelProfile = () => {
     const naviage = useNavigate()
     // selectors
     const hotelResponse = useSelector(selectAddHotelRes)
-    const [keyPoints, setKeyPoints] = useState([{point: "", index: 0}])
-   
+    const [keyPoints, setKeyPoints] = useState([{ point: "", index: 0 }])
+
     // location
     const [countries, setCountries] = useState([])
     const [states, setStates] = useState([])
     const [cities, setCities] = useState([])
     const selectedCountry = watch("country")
     const selectedState = watch("state")
-    
+
     useEffect(() => {
         fetch("http://api.geonames.org/contains?geonameId=2746385&username=abhinavsen").then(response => response.json())
-        .then(data => {
-            console.log("data of country", data)
-            setCountries(data.geonames)})
+            .then(data => {
+                console.log("data of country", data)
+                setCountries(data.geonames)
+            })
             .catch(error => console.error("Error fetching countries", error))
     }, [])
-    
+
     // image upload state
     const [imageFile, setImageFile] = useState([])
     const [stateError, setStateError] = useState('')
-
+    const [fileInput, setFileInput] = useState([])
     const handleAddPoint = () => {
         const newPointNumber = keyPoints.length + 1
         if (newPointNumber <= 5) {
@@ -52,13 +53,13 @@ const CreateHotelProfile = () => {
         setValue('keyPoints', newKeyPoints);
     }
 
-    const onSubmit = async(data) => {
+    const onSubmit = async (data) => {
         console.log("data", data)
         const token = await fetchToken()
         console.log("token", token)
-        const response = await dispatch (addHotelAsync({accessToken: token, hotelData: data }))
-        if(response){
-            console.log("response in frontend" , response)
+        const response = await dispatch(addHotelAsync({ accessToken: token, hotelData: data }))
+        if (response) {
+            console.log("response in frontend", response)
             naviage("/room-profile", { state: response.payload.hotelId })
         }
     }
@@ -67,6 +68,8 @@ const CreateHotelProfile = () => {
         setImageFile([])
         console.log("file input", e.target.files)
         const files = Array.from(e.target.files)
+        setFileInput(e.target.files)
+        console.log()
         if ((imageFile.length + files.length) > 7) {
             console.log("(imageFile.length + files.length)", (imageFile.length + files.length))
             setStateError("You can only upload upto 7 files.")
@@ -77,7 +80,7 @@ const CreateHotelProfile = () => {
         const newImage = files.map(file => URL.createObjectURL(file))
 
         setImageFile((previous) => [...previous, ...newImage])
-        setValue("hotelImage", newImage)
+        setValue("images", files)
         setStateError("")
     }
 
@@ -97,12 +100,13 @@ const CreateHotelProfile = () => {
                     <div className='flex flex-col gap-8'>
                         <div className='p-10'>
                             <input className='' type="file" multiple onChange={handleFileInput} />
+
                             {stateError && <p style={{ color: 'red' }}>{stateError}</p>}
                             {imageFile.length > 0 && (
                                 <Carousel>
                                     {imageFile.map((image, index) => (
                                         <div key={index}>
-                                            <img className=' object-cover' src={image} alt={`Uploaded ${index}`} />
+                                            <img className='object-cover  ' src={image} alt={`Uploaded ${index}`} />
                                         </div>
                                     ))}
                                 </Carousel>
@@ -136,7 +140,7 @@ const CreateHotelProfile = () => {
                                 <div key={index}>
                                     <div className='flex justify-between pr-1 pt-4'>
                                         <label className='text-sm'>Point {index + 1}:</label>
-                                         {/* <FontAwesomeIcon onClick={() => handleDeletePoint(index)} className='text-gray-600' icon={faTrash}/>  */}
+                                        {/* <FontAwesomeIcon onClick={() => handleDeletePoint(index)} className='text-gray-600' icon={faTrash}/>  */}
                                     </div>
                                     <input
                                         className='px-4 py-2 mt-2 w-full border rounded-lg text-sm'
@@ -155,28 +159,7 @@ const CreateHotelProfile = () => {
                         </div>
 
                         <div className='mt-3 flex w-full flex-wrap sm:flex-nowrap gap-2 my-4'>
-                            <div className='flex w-full custom:w-1/3 flex-col'>
-                                <label className='text-sm'>Country</label>
-                                <select className='px-4 w-full py-2 mt-2 border rounded-lg text-sm'
-                                    {...register("country", { required: "This filed is required" })}
-                                >
-                                    <option>Option 1</option>
-                                    <option>Option 2</option>
-                                    <option>Option 3</option>
-                                </select>
-                                {errors.country && <p className="text-red-500 my-0 py-0 text-sm ">{errors.country.message}</p>}
-                            </div>
-                            <div className='flex w-full custom:w-1/3 flex-col'>
-                                <label className='text-sm'>State</label>
-                                <select className='px-4 w-full py-2 mt-2 border rounded-lg text-sm'
-                                    {...register("state", { required: "This filed is required" })}
-                                >
-                                    <option>Option 1</option>
-                                    <option>Option 2</option>
-                                    <option>Option 3</option>
-                                </select>
-                                {errors.state && <p className="text-red-500 my-0 py-0 text-sm ">{errors.state.message}</p>}
-                            </div>
+                            
                             <div className='flex  w-full custom:w-1/3 flex-col'>
                                 <label className='text-sm'>City</label>
                                 <select className='px-4 w-full py-2 mt-2 border rounded-lg text-sm'
@@ -214,7 +197,7 @@ const CreateHotelProfile = () => {
                                 <div className='flex flex-col w-full sm:w-1/2 mt-3'>
                                     <label className='text-sm'>Number of Rooms</label>
                                     <input className='px-4  py-2 mt-2 border rounded-lg text-sm' type="tel"
-                                    {...register("numberOfRooms", { required: "This filed is required" })}
+                                        {...register("numberOfRooms", { required: "This filed is required" })}
                                     />
                                     {errors.numberOfRooms && <p className="text-red-500 my-0 py-0 text-sm ">{errors.numberOfRooms.message}</p>}
                                 </div>
