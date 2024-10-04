@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import { useDispatch, useSelector } from 'react-redux';
-import { addHotelAsync, addHotelileAsync, selectAddHotelRes } from './hotelProfileSlice';
+import { addHotelAsync, addHotelileAsync, getAllLocationAsync, selectAddHotelRes, selectLocation } from './hotelProfileSlice';
 import { fetchToken } from '../../../../../common/cookie';
 import { useNavigate } from "react-router-dom"
 const CreateHotelProfile = () => {
@@ -16,24 +16,10 @@ const CreateHotelProfile = () => {
     const naviage = useNavigate()
     // selectors
     const hotelResponse = useSelector(selectAddHotelRes)
+    const location = useSelector(selectLocation)
+    console.log("location: ", location)
     const [keyPoints, setKeyPoints] = useState([{ point: "", index: 0 }])
-
-    // location
-    const [countries, setCountries] = useState([])
-    const [states, setStates] = useState([])
-    const [cities, setCities] = useState([])
-    const selectedCountry = watch("country")
-    const selectedState = watch("state")
-
-    useEffect(() => {
-        fetch("http://api.geonames.org/contains?geonameId=2746385&username=abhinavsen").then(response => response.json())
-            .then(data => {
-                console.log("data of country", data)
-                setCountries(data.geonames)
-            })
-            .catch(error => console.error("Error fetching countries", error))
-    }, [])
-
+    
     // image upload state
     const [imageFile, setImageFile] = useState([])
     const [stateError, setStateError] = useState('')
@@ -60,7 +46,7 @@ const CreateHotelProfile = () => {
         const response = await dispatch(addHotelAsync({ accessToken: token, hotelData: data }))
         if (response) {
             console.log("response in frontend", response)
-            naviage("/room-profile", { state: response.payload.hotelId })
+            naviage("/room-profile", { state: response.payload.data })
         }
     }
 
@@ -92,6 +78,11 @@ const CreateHotelProfile = () => {
     //         setValue('keyPoints', newKeyPoints);
     //     }
     // }
+
+    useEffect(() => {
+        dispatch(getAllLocationAsync())
+    }, [dispatch])
+    
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className='flex flex-wrap lg:flex-nowrap'>
@@ -99,8 +90,7 @@ const CreateHotelProfile = () => {
                 <div className='w-full lg:w-1/2 my-8 px-6'>
                     <div className='flex flex-col gap-8'>
                         <div className='p-10'>
-                            <input className='' type="file" multiple onChange={handleFileInput} />
-
+                            <input className='' type="file" multiple onChange={handleFileInput} /> 
                             {stateError && <p style={{ color: 'red' }}>{stateError}</p>}
                             {imageFile.length > 0 && (
                                 <Carousel>
@@ -165,9 +155,10 @@ const CreateHotelProfile = () => {
                                 <select className='px-4 w-full py-2 mt-2 border rounded-lg text-sm'
                                     {...register("city", { required: "This filed is required" })}
                                 >
-                                    <option>Option 1</option>
-                                    <option>Option 2</option>
-                                    <option>Option 3</option>
+                                <option></option>
+                                    {location && location.map((item, index) => (
+                                        <option>{item.name}, {item.state}</option>
+                                    ))}
                                 </select>
                                 {errors.city && <p className="text-red-500 my-0 py-0 text-sm ">{errors.city.message}</p>}
                             </div>

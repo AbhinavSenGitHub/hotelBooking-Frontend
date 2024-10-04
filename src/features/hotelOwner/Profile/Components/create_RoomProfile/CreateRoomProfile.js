@@ -25,9 +25,9 @@ const CreateRoomProfile = () => {
     const [imageFile, setImageFile] = useState([])
     const [stateError, setStateError] = useState('')
     const [selectedAmenities, setSelectedAmenities] = useState([]);
-    
+
     setValue("roomHotel_Id", location)
-    
+
     const predefinedAmenities = [
         "WiFi",
         "Air Conditioning",
@@ -36,10 +36,11 @@ const CreateRoomProfile = () => {
         "Gym",
         "Parking",
         "Breakfast"
-      ];
-      const handleAmenityChange = (event) => {
-        setSelectedAmenities((previous) => previous.includes(event.target.value) ?  previous.filter(amenity => amenity !== event.target.value) :  [...previous, event.target.value]);
-      };
+    ];
+
+    const handleAmenityChange = (event) => {
+        setSelectedAmenities((previous) => previous.includes(event.target.value) ? previous.filter(amenity => amenity !== event.target.value) : [...previous, event.target.value]);
+    };
 
     const handleAddPoint = () => {
         const newPointNumber = keyPoints.length + 1
@@ -58,10 +59,9 @@ const CreateRoomProfile = () => {
 
     const onSubmit = async (data) => {
         console.log("data", data)
-        
         const token = await fetchToken()
-        dispatch(createRoomAsync({ accessToken: token , roomData: data}))
-        navigate("/display-rooms")
+        dispatch(createRoomAsync({ accessToken: token, roomData: data }))
+        // navigate("/display-rooms")
     }
 
     const handleFileInput = (e) => {
@@ -74,11 +74,9 @@ const CreateRoomProfile = () => {
             setImageFile([])
             return
         }
-
         const newImage = files.map(file => URL.createObjectURL(file))
-
         setImageFile((previous) => [...previous, ...newImage])
-        setValue("hotelImage", newImage)
+        setValue("roomImage", files)
         setStateError("")
     }
 
@@ -90,6 +88,7 @@ const CreateRoomProfile = () => {
     //         setValue('keyPoints', newKeyPoints);
     //     }
     // }
+
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className='flex flex-wrap lg:flex-nowrap'>

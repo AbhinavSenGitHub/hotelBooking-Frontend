@@ -18,7 +18,7 @@ const Login = () => {
         if(response){
             // console.log("loginResponse ", loginResponse)
             if(response?.payload?.success){
-                // navigate("/hotel-profile")
+                navigate("/hotel-profile")
             }
         }
     }
