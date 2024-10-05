@@ -4,15 +4,21 @@ import authCookieSlice from "../common/fetchCookieData"
 import  createHotelSlice  from '../features/hotelOwner/Profile/Components/create_HotelProfile/hotelProfileSlice';
 import createRoomSlice  from '../features/hotelOwner/Profile/Components/create_RoomProfile/roomProfileSlice';
 import counterSlice from '../features/counter/counterSlice';
+import  displaySlice  from '../features/hotelOwner/DisplayRoom/DisplayRoomsSlice';
 
 export const store = configureStore({
   reducer: {
-    // auth reducer
+    // auth
     auth: authReducer,
     authCookieReducer: authCookieSlice,
-    // add hotel    
+
+    //hotel    
     createHotelReducer: createHotelSlice,
-    //add room
-    createRoomReducer: createRoomSlice
+
+    //room
+    createRoomReducer: createRoomSlice,
+
+    //display
+    displayReducer: displaySlice
   },
 });

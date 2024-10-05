@@ -1,12 +1,20 @@
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Card from './Card'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllRoomsAsync, selectAllRooms } from '../DisplayRoomsSlice'
 
 const DisplayRooms = () => {
+    const dispatch = useDispatch()
+    const allRooms = useSelector(selectAllRooms)
+    console.log("all rooms", allRooms)
+    useEffect(()=> {
+        dispatch(getAllRoomsAsync())
+    }, [dispatch])
     return (
         <div>
-
+        
             {/* top search portion */}
             <div className='flex items-center justify-center h-[100px] bg-blue-400'>
                 <div className='flex border rounded-xl overflow-hidden shadow-lg'>

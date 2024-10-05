@@ -61,7 +61,7 @@ const CreateRoomProfile = () => {
         console.log("data", data)
         const token = await fetchToken()
         dispatch(createRoomAsync({ accessToken: token, roomData: data }))
-        // navigate("/display-rooms")
+        navigate("/display-rooms")
     }
 
     const handleFileInput = (e) => {
@@ -118,7 +118,7 @@ const CreateRoomProfile = () => {
                             <div className='mt-3'>
                                 <label className='text-sm'>Room Description</label>
                                 <textarea type="text" className='px-4 py-2 mt-3 w-full border rounded-lg text-sm'
-                                    {...register("roomDescription", { required: true })}
+                                    {...register("description", { required: true })}
                                 ></textarea>
                             </div>
                         </div>
