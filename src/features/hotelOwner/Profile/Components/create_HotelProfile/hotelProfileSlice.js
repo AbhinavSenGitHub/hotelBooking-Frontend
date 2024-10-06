@@ -38,7 +38,6 @@ export const createHotelSlice = createSlice({
       .addCase(addHotelAsync.fulfilled, (state, action) => {  
         state.status = 'idle';  
         state.addHotelRes = action.payload; // Here we should get the response  
-        console.log("state.addHotelRes: ", state.addHotelRes); // Log what is returned  
       })   
       .addCase(getAllLocationAsync.pending, (state) => {
         state.status = "loading"
@@ -46,7 +45,6 @@ export const createHotelSlice = createSlice({
       .addCase(getAllLocationAsync.fulfilled, (state, action) => {
         state.status = "idle"
         state.location = action.payload.data
-        console.log("state.location", state.location)
       })
   },  
 });  

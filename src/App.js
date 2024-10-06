@@ -9,6 +9,7 @@ import CreateRoomProfile from './features/hotelOwner/Profile/Components/create_R
 import DisplayRooms from './features/hotelOwner/DisplayRoom/components/DisplayRooms';
 import Home from './features/hotelOwner/Home/component/Home';
 import Navbar from './features/hotelOwner/Home/component/Navbar';
+import Description from './features/hotelOwner/RoomDescription/Description';
 
 
 // hotel owner
@@ -20,6 +21,8 @@ const router = createBrowserRouter([
     element: <Navbar/>,
     children: [
       { path: "/", element: <Home/> },
+      { path: "/display-rooms", element: <DisplayRooms/>},
+      { path: "/description", element: <Description/>},
     ]
   },
   {
@@ -44,10 +47,7 @@ const router = createBrowserRouter([
     path: "/room-profile",
     element: <CreateRoomProfile/>
   },
-  {
-    path: "/display-rooms",
-    element: <DisplayRooms/>
-  }
+ 
 ])
 
 function App() {

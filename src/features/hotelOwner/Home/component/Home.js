@@ -6,6 +6,7 @@ import GetHotel from './GetHotel'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import HotelCard from './HotelCard'
+import SearchBar from './SearchBar'
 
 const Home = () => {
 
@@ -37,38 +38,7 @@ const Home = () => {
       </div>
 
       <div className='flex justify-center -mt-8 '>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='h-fit py-1 px-1 rounded-lg top-60 flex flex-wrap items-center justify-center gap-1 bg-yellow-500 w-fit'>
-
-            <div className='bg-white py-2 flex items-center  px-2 w-[300px]'>
-              <label><FontAwesomeIcon icon={faLocation} className='text-gray-600 text-2xl ' /></label>
-              <input type="text" {...register("city")} placeholder='Where you wish to go' className='py-2 px-4 ml-2 w-full' />
-            </div>
-
-            <div className='bg-white py-2 flex items-center  px-2 w-[350px]'>
-              <label>
-                {/* <FontAwesomeIcon icon={faCalendar} className='text-gray-600 
-            text-2xl ' /> */}
-                Start
-              </label>
-              <input type="date" {...register("checkinDate")} placeholder='Check in data' className='py-2 px-4 ml-2 w-full' />
-            </div>
-
-            <div className='bg-white flex items-center  px-2 w-[260px] py-2'>
-              <label className=''>
-                {/* <FontAwesomeIcon icon={faUser} className='text-gray-600 text-2xl'/> */}
-                End
-              </label>
-              <input type="date" {...register("checkoutDate")} placeholder='Check out date' className='py-2  px-4 ml-2 w-full' />
-            </div>
-
-            <div>
-            
-                <button type="submit" className='bg-[#2c7bea] font-normal text-2xl py-3 px-4 text-white'>Search</button>
-             
-            </div>
-          </div>
-        </form>
+        <SearchBar/>
       </div>
 
       <GetHotel />
