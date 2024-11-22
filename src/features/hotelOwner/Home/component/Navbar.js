@@ -1,36 +1,97 @@
+// import React, { useState } from 'react'
+// import { Link, Outlet } from 'react-router-dom'
+// import logo from "../image/logo.svg"
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faBars, faBurger, faTimes } from '@fortawesome/free-solid-svg-icons'
+
+// const Navbar = () => {
+
+//     const [open, setOpen] = useState(false)
+//     return (
+//         <>
+//             <nav>
+
+//                 {!open ? <div className='flex text-white justify-around py-3 bg-[#003580]'>
+//                     <img src={logo} className='h-[40px] w-[200px]' alt='logo' />
+//                     <div className='flex gap-8'>
+//                         <button>Language</button>
+//                         <button>Support</button>
+//                         <button>List your property</button>
+//                         <Link to={"/signup"} className='bg-white flex items-center text-[#003580] px-3 rounded-lg font-medium'>Register</Link>
+
+//                         <Link to="/login" className='bg-white flex items-center text-[#003580] px-3 rounded-lg font-medium'>Sign in</Link>
+//                     </div>
+//                 </div>
+//                     :
+//                     (
+//                         <div className='flex text-white justify-around py-3 bg-[#003580]'>
+//                             <img src={logo} className='h-[40px] w-[200px]' alt='logo' />
+//                             <FontAwesomeIcon icon={faBars}/>
+//                             <FontAwesomeIcon icon={faTimes}/>
+//                         </div>
+//                     )
+//                 }
+//             </nav>
+//             <Outlet />
+//         </>
+//     )
+// }
+
+// export default Navbar
+
+
+
+
+
 import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import logo from "../image/logo.svg"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faBurger, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 const Navbar = () => {
 
     const [open, setOpen] = useState(false)
+
     return (
         <>
-            <nav>
+            <nav className='bg-[#003580] py-3'>
+                <div className='flex items-center justify-between px-6 text-white'>
 
-                {!open ? <div className='flex text-white justify-around py-3 bg-[#003580]'>
+                    {/* Logo */}
                     <img src={logo} className='h-[40px] w-[200px]' alt='logo' />
-                    <div className='flex gap-8'>
+
+                    {/* Desktop Menu */}
+                    <div className='hidden lg:flex gap-8 items-center'>
                         <button>Language</button>
                         <button>Support</button>
                         <button>List your property</button>
                         <Link to={"/signup"} className='bg-white flex items-center text-[#003580] px-3 rounded-lg font-medium'>Register</Link>
-
                         <Link to="/login" className='bg-white flex items-center text-[#003580] px-3 rounded-lg font-medium'>Sign in</Link>
                     </div>
+
+                    {/* Hamburger Icon */}
+                    <div className='lg:hidden'>
+                        <button onClick={() => setOpen(!open)}>
+                            {open ? (
+                                <FontAwesomeIcon icon={faTimes} className='text-2xl' />
+                            ) : (
+                                <FontAwesomeIcon icon={faBars} className='text-2xl' />
+                            )}
+                        </button>
+                    </div>
                 </div>
-                    :
-                    (
-                        <div className='flex text-white justify-around py-3 bg-[#003580]'>
-                            <img src={logo} className='h-[40px] w-[200px]' alt='logo' />
-                            <FontAwesomeIcon icon={faBars}/>
-                            <FontAwesomeIcon icon={faTimes}/>
-                        </div>
-                    )
-                }
+
+                {/* Mobile Menu */}
+                {open && (
+                    <div className='lg:hidden flex flex-col items-end pr-6 gap-6 mt-4 text-white'>
+                        <button>Language</button>
+                        <button>Support</button>
+                        <button>List your property</button>
+                        <Link to={"/signup"} className='bg-white flex items-center text-[#003580] px-3 rounded-lg font-medium'>Register</Link>
+                        <Link to="/login" className='bg-white flex items-center text-[#003580] px-3 rounded-lg font-medium'>Sign in</Link>
+                    </div>
+                )}
             </nav>
             <Outlet />
         </>

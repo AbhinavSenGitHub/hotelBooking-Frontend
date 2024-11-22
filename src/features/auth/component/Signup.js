@@ -1,116 +1,194 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faSkype, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
-import { createUserAsync, selectUserResponse } from '../authSlice';
+import { createUserAsync, selectStatus, selectUserResponse } from '../authSlice';
+import Loader from "../../../common/Loader"
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import Slide from "@mui/material/Slide";
 const Signup = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm()
     const dispatch = useDispatch()
+    const loader = useSelector(selectStatus)
+    const [status, setStatus] = useState({ show: false, message: "", severity: "success" })
     // const signupResponse = useSelector(selectUserResponse)
     const navigate = useNavigate();
-   
+
     const onSubmit = async (data) => {
         console.log(data)
         const response = await dispatch(createUserAsync(data))
-        if(response){
-            // console.log("singupResponse", signupResponse)
+        if (response) {
             console.log("singupResponse response", response)
             if (response?.payload?.success) {
-                navigate("/hotel-profile");
+                setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
+                setTimeout(() => navigate("/owner-profile"), 1000)
+
+            } else {
+                console.log("response of singup", response)
+                setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
             }
         }
+
     }
+
     return (
-        <div className="w-full  mt-8">
-            <div className='flex justify-center items-center flex-col gap-8'>
-                <div>
-                    <h3 className='text-3xl'>Hotel Booking</h3>
-                </div>
-                <div>
-                    <form noValidate onSubmit={handleSubmit(onSubmit)} className='w-full flex  justify-center items-center'>
-                        <div className='w-[500px] px-6'>
-                            <div className='flex flex-col mb-1'>
-                                <label className='text-sm text-gray-800'>Username</label>
-                                <input className="border text-sm px-4 py-2 my-2 rounded-md border-gray-300" type="text" placeholder='Username'
-                                    {...register("username", {
-                                        required: "Username is required",
-                                    })}
-                                />
-                                {errors.username && <p className="text-red-500 my-0 py-0 text-sm ">{errors.username.message}</p>}
-                            </div>
-                            <div className='flex flex-col mb-1'>
-                                <label className='text-sm text-gray-800'>Email</label>
-                                <input className="border text-sm px-4 py-2 my-2 rounded-md border-gray-300"
-                                    {...register("email", {
-                                        required: "Email is required",
-                                        pattern: {
-                                            value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
-                                            message: "Email is not valied"
-                                        }
-                                    })}
-                                    type="email" placeholder='Username'
-                                />
-                                {errors.email && <p className="text-red-500 text-sm whitespace-pre-line">{errors.email.message}</p>}
-                            </div>
-                            <div className='flex flex-col mb-1'>
-                                <label className='text-sm text-gray-800'>Password</label>
-                                <input className="border text-sm px-4 py-2 my-2 rounded-md border-gray-300" type="password" placeholder='Username'
-                                    {...register("password", {
-                                        required: "Password is required",
-                                        pattern: {
-                                            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-                                            message: `- at least 8 characters
-- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number
-- Can contain special characters`
-                                        }
-                                    })}
-                                />
-                                {errors.password && <p className="text-red-500 text-sm whitespace-pre-line">{errors.password.message}</p>}
-                            </div>
+        <div>
 
-                            <div className='flex flex-col mb-1'>
-                                <label className='text-sm text-gray-800'>User Type</label>
-                                <select className="border text-sm cursor-pointer px-4 py-2 my-2 rounded-md border-gray-300" type="password" placeholder='Username'
-                                    {...register("userType", {
-                                        required: "This field is required"
-                                    })}
+            {/* Loader and Blur Background */}
+            {loader === "panding" && (
+               <Loader/>
+            )}
+
+            {/* status */}
+            {status.show && (
+                <Slide direction="left" in={status.show} mountOnEnter unmountOnExit>
+                    <Stack sx={{ width: "300px", position: "fixed", top: 30, right: 0, zIndex: 1000 }} spacing={2}>
+                        <Alert severity={status.severity} variant="outlined">
+                            {status.message}
+                        </Alert>
+                    </Stack>
+                </Slide>
+            )}
+            <div className="w-full h-screen flex justify-center items-center px-4 sm:px-8">
+                <div className="flex flex-col items-center w-full max-w-lg gap-8">
+                    <div className="w-full">
+                        <h3 className="text-2xl md:text-3xl text-center">Sign Up</h3>
+                        <form
+                            noValidate
+                            onSubmit={handleSubmit(onSubmit)}
+                            className="w-full mt-6"
+                        >
+                            <div className="flex flex-col gap-4">
+                                {/* Username */}
+                                <div>
+                                    <label className="text-sm text-gray-800">Username</label>
+                                    <input
+                                        className="w-full border text-sm px-4 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        type="text"
+                                        placeholder="Username"
+                                        {...register("username", {
+                                            required: "Username is required",
+                                        })}
+                                    />
+                                    {errors.username && (
+                                        <p className="text-red-500 text-sm">{errors.username.message}</p>
+                                    )}
+                                </div>
+
+                                {/* Email */}
+                                <div>
+                                    <label className="text-sm text-gray-800">Email</label>
+                                    <input
+                                        className="w-full border text-sm px-4 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        type="email"
+                                        placeholder="Email"
+                                        {...register("email", {
+                                            required: "Email is required",
+                                            pattern: {
+                                                value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
+                                                message: "Email is not valid",
+                                            },
+                                        })}
+                                    />
+                                    {errors.email && (
+                                        <p className="text-red-500 text-sm">{errors.email.message}</p>
+                                    )}
+                                </div>
+
+                                {/* Password */}
+                                <div>
+                                    <label className="text-sm text-gray-800">Password</label>
+                                    <input
+                                        className="w-full border text-sm px-4 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        type="password"
+                                        placeholder="Password"
+                                        {...register("password", {
+                                            required: "Password is required",
+                                            pattern: {
+                                                value:
+                                                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+                                                message: `- At least 8 characters
+- Must contain 1 uppercase, 1 lowercase, and 1 number
+- Special characters allowed`,
+                                            },
+                                        })}
+                                    />
+                                    {errors.password && (
+                                        <p className="text-red-500 text-sm">{errors.password.message}</p>
+                                    )}
+                                </div>
+
+                                {/* User Type */}
+                                <div>
+                                    <label className="text-sm text-gray-800">User Type</label>
+                                    <select
+                                        className="w-full border text-sm px-4 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        {...register("userType", {
+                                            required: "User type is required",
+                                        })}
+                                    >
+                                        <option value="">Select...</option>
+                                        <option value="hotelOwner">Want to host my hotel</option>
+                                        <option value="customer">Make a booking</option>
+                                    </select>
+                                    {errors.userType && (
+                                        <p className="text-red-500 text-sm">{errors.userType.message}</p>
+                                    )}
+                                </div>
+
+                                {/* Submit Button */}
+                                <button
+                                    type="submit"
+                                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 sm:text-base transform transition duration-150 active:scale-95"
                                 >
-                                    <option value="">Select....</option>
-                                    <option value="hotelOwner">Want to host my hotel.</option>
-                                    <option value="customer">Make a booking.</option>
-                                </select>
-                                {errors.userType && <p className="text-red-500 text-sm whitespace-pre-line">{errors.userType.message}</p>}
+                                    Submit
+                                </button>
                             </div>
 
-                            <button className='border w-full py-2 font-medium text-sm rounded-md hover:text-white hover:bg-[#2b77f9] transition duration-300' type="submit">Submit</button>
-
-                            <div className='flex items-center my-8'>
-                                <hr className='flex-grow border-gray-300' />
-                                <span class="px-4 text-sm text-gray-500">OR</span>
-                                <hr className='flex-grow  border-gray-300' />
+                            <div className="flex items-center my-6">
+                                <hr className="flex-grow border-gray-300" />
+                                <span className="px-4 text-sm text-gray-500">OR</span>
+                                <hr className="flex-grow border-gray-300" />
                             </div>
 
-                            <div className='flex gap-6 items-center justify-center'>
-                                <div className='py-2 border px-3 cursor-pointer rounded-full '>
+                            {/* Social Login */}
+                            <div className="flex justify-center gap-4">
+                                <div className="py-2 px-3 border rounded-full cursor-pointer">
                                     <FontAwesomeIcon icon={faXTwitter} size="lg" />
                                 </div>
-                                <div className='py-2 border px-3 cursor-pointer rounded-full '>
-                                    <FontAwesomeIcon icon={faGoogle} size="lg" className='text-[#DB4437]' />
+                                <div className="py-2 px-3 border rounded-full cursor-pointer">
+                                    <FontAwesomeIcon
+                                        icon={faGoogle}
+                                        size="lg"
+                                        className="text-[#DB4437]"
+                                    />
                                 </div>
-                                <div className='py-2 border px-3 cursor-pointer rounded-full '>
-                                    <FontAwesomeIcon icon={faSkype} size="lg" className='text-[#00AFF0]' />
+                                <div className="py-2 px-3 border rounded-full cursor-pointer">
+                                    <FontAwesomeIcon
+                                        icon={faSkype}
+                                        size="lg"
+                                        className="text-[#00AFF0]"
+                                    />
                                 </div>
                             </div>
-                            <div className='text-center my-4'>
-                                <p className='text-sm'>Already have an account? <Link className='text-blue-700' to="/login">Try Login</Link></p>
+
+                            <div className="text-center mt-6">
+                                <p className="text-sm">
+                                    Already have an account?{" "}
+                                    <Link className="text-blue-600" to="/login">
+                                        Try Login
+                                    </Link>
+                                </p>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
+
         </div>
     )
 }

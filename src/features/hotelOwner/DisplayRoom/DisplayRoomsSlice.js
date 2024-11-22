@@ -3,7 +3,7 @@ import { getAllRooms } from './DisplayRoomsAPI';
 
 const initialState = {
   value: 0,
-  status: 'idle',
+  status: 'idle', 
   allRooms: null
 };
 

@@ -20,7 +20,7 @@ export const createRoomSlice = createSlice({
     extraReducers: (builder) => {
         builder
         .addCase(createRoomAsync.pending, (state) => {
-             state.status = 'loading'
+             state.status = 'pending'
         })
         .addCase(createRoomAsync.fulfilled, (state, action) => {
             state.status = "idle";
@@ -29,4 +29,5 @@ export const createRoomSlice = createSlice({
     },
 })
 export const selectRoomRes = (state) => state.createRoomReducer.createRoomRes
+export const selectRoomStatus = (state) => state.createRoomReducer.status
 export default createRoomSlice.reducer;

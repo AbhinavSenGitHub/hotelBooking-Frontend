@@ -48,5 +48,5 @@ export const authSlice = createSlice({
 });
 
 export const selectUserResponse = (state) => state.auth.authResponse;
-
+export const selectStatus = (state) => state.auth.status
 export default authSlice.reducer;

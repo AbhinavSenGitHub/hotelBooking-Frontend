@@ -1,44 +1,38 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchToken } from './cookie';
+import { fetchAuthCookie, fetchToken } from './cookie';
 
-// Thunk to fetch token
-export const fetchTokenAsync = createAsyncThunk('auth/fetchToken', async () => {
-  const token = await fetchToken(); // Your token fetching logic here
-  console.log("token in app slice:- ", token);
-  return token;
-});
+
+
+export const fetchAuthCookieAsync = createAsyncThunk("auth/fetchAuthCookieAsync", async () => {
+  const cookie = await fetchAuthCookie()
+  console.log("what is the cookie:" , cookie);
+  return cookie
+})
 
 const authCookieSlice = createSlice({
   name: 'auth', // Name of the slice
   initialState: {
     token: null,
+    cookie: null,
     loading: false,
     error: null,
   },
-  reducers: {
-    logout: (state) => {
-      state.token = null;
-    },
-  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTokenAsync.pending, (state) => {
+      .addCase(fetchAuthCookieAsync.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchTokenAsync.fulfilled, (state, action) => {
+      .addCase(fetchAuthCookieAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload;
-        console.log("token state.token:- ", state.token);
+        state.token = action.payload.token;
+        state.cookie = action.payload.userData;
+        console.log("state.cookie",state.cookie)
       })
-      .addCase(fetchTokenAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      });
   },
 });
 
 // Selector to get token from the state
-export const selectToken = (state) => state.authCookieReducer.token; // This references the correct slice
+export const selectToken = (state) => state.authCookieReducer.token;
+export const selectCookie = (state) => state.authCookieReducer.cookie; 
 
-export const { logout } = authCookieSlice.actions;
 export default authCookieSlice.reducer;

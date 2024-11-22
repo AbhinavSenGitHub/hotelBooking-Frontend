@@ -14,3 +14,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.slick-slide > div {
+  margin: 0 10px;
+}
+.slick-prev:before,
+.slick-next:before {
+    color: rgb(56, 55, 55); /* Change to your preferred color */
+    font-size: 24px; /* Optional: adjust the size */
+}

@@ -1,6 +1,6 @@
 export const getAllRooms = async () => {
     try{
-        const response = await fetch ("http://localhost:8081/hotel-owner/getall-room", {
+        const response = await fetch ("/hotel-owner/getall-room", {
             method: 'GET',
             headers: {
                 "Accept": "application/json",

@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import HotelCard from './HotelCard'
 import SearchBar from './SearchBar'
+import Clients from './Clients'
+import LocationCard from './LocationCard'
 
 const Home = () => {
 
@@ -22,9 +24,9 @@ const Home = () => {
   }
   return (
     <div className=''>
-      <div className='h-[500px] bg-[#003580] flex flex-wrap justify-around pt-[10vh]'>
+      <div className='h-auto xl:h-[500px] bg-[#003580] flex flex-wrap custom-919:flex-nowrap justify-around pt-[10vh]'>
 
-        <div className='text-white flex flex-col mt-10 gap-6 px-10'>
+        <div className='text-white flex flex-col md:mt-10 gap-6 px-10'>
           <h1 className=' text-5xl'>Travel Made Easy, <br />Hosting Made Simple</h1>
           <p>Find your perfect stay or share your space with travelers. <br /> Our platform makes booking and hosting simple, fast, and reliable.</p>
           <div className='flex gap-4 my-3'>
@@ -37,12 +39,13 @@ const Home = () => {
         </div>
       </div>
 
-      <div className='flex justify-center -mt-8 '>
+      <div className='flex justify-center mt-10 xl:-mt-8 '>
         <SearchBar/>
       </div>
 
       <GetHotel />
-
+      <Clients/>
+      <LocationCard/>
       <HotelCard/>
     </div>
   )

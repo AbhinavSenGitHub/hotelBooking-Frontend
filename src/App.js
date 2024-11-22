@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Signup from './features/auth/component/Signup';
@@ -10,6 +10,12 @@ import DisplayRooms from './features/hotelOwner/DisplayRoom/components/DisplayRo
 import Home from './features/hotelOwner/Home/component/Home';
 import Navbar from './features/hotelOwner/Home/component/Navbar';
 import Description from './features/hotelOwner/RoomDescription/Description';
+import Profile from './features/hotelOwner/Profile/Components/Profile/Profile';
+import HotelRoom from './features/hotelOwner/Profile/Components/Profile/HotelRoom';
+import EditRoomDescription from './features/hotelOwner/RoomDescription/EditRoomDescription';
+import EditHotel from './features/hotelOwner/EditHotel/EditHotel';
+import { useDispatch } from 'react-redux';
+import { fetchAuthCookieAsync } from './common/fetchCookieData';
 
 
 // hotel owner
@@ -18,42 +24,56 @@ import Description from './features/hotelOwner/RoomDescription/Description';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navbar/>,
+    element: <Navbar />,
     children: [
-      { path: "/", element: <Home/> },
-      { path: "/display-rooms", element: <DisplayRooms/>},
-      { path: "/description", element: <Description/>},
+      { path: "/", element: <Home /> },
+      { path: "/display-rooms", element: <DisplayRooms /> },
+      { path: "/description", element: <Description /> },
+      { path: "/edit-room-details", element: <EditRoomDescription /> },
+      { path: "/edit-hotel-details", element: <EditHotel /> },
+      {
+        path: "/owner-profile",
+        element: <Profile />
+      },
+      {path: "/owner-hotel-rooms", element: <HotelRoom/>}
     ]
   },
   {
     path: "/signup",
-    element: <Signup/>
+    element: <Signup />
   },
   {
     path: "/login",
-    element: <Login/>
+    element: <Login />
   },
   {
     path: "/email-verify",
-    element: <EmailVarification/>
+    element: <EmailVarification />
   },
 
   // hotel owner
+
   {
     path: "/hotel-profile",
-    element: <CreateHotelProfile/>
+    element: <CreateHotelProfile />
   },
   {
     path: "/room-profile",
-    element: <CreateRoomProfile/>
+    element: <CreateRoomProfile />
   },
- 
+
 ])
 
 function App() {
+  const dispatch = useDispatch()
+  
+  useEffect(() => {
+    dispatch(fetchAuthCookieAsync());
+}, [dispatch]);
+
   return (
     <div className="App ">
-      <RouterProvider router = {router}/>
+      <RouterProvider router={router} />
     </div>
   );
 }

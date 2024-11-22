@@ -20,7 +20,7 @@ export const addHotel = async (token, data) => {
         }
         
         console.log("Formdata: ", formData)
-        const response = await fetch("http://localhost:8081/hotel-owner/add-hotel", {
+        const response = await fetch("/hotel-owner/add-hotel", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -39,7 +39,7 @@ export const addHotel = async (token, data) => {
 
 export const getAllLocaton = async () => {
     try{
-        const response = await fetch("http://localhost:8081/all-location", {
+        const response = await fetch("/all-location", {
             method: "GET",
             headers: {
                 "Accept": "application/json",

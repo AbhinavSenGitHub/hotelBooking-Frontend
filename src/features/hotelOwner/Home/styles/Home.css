@@ -1,0 +1,10 @@
+.your-class {
+    margin-top: -2rem; /* Tailwind's `-mt-8` is -2rem */
+}
+
+/* Apply mt-10 at screen widths of 1032px and above */
+@media (min-width: 1032px) {
+    .your-class {
+        margin-top: 2.5rem; /* Tailwind's `mt-10` is 2.5rem */
+    }
+}

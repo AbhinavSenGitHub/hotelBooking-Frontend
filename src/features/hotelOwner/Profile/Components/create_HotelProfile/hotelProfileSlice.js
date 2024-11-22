@@ -33,14 +33,14 @@ export const createHotelSlice = createSlice({
   extraReducers: (builder) => {  
     builder  
       .addCase(addHotelAsync.pending, (state) => {  
-        state.status = 'loading';  
+        state.status = 'pending';  
       })  
       .addCase(addHotelAsync.fulfilled, (state, action) => {  
         state.status = 'idle';  
         state.addHotelRes = action.payload; // Here we should get the response  
       })   
       .addCase(getAllLocationAsync.pending, (state) => {
-        state.status = "loading"
+        state.status = "pending"
       })
       .addCase(getAllLocationAsync.fulfilled, (state, action) => {
         state.status = "idle"
@@ -53,5 +53,5 @@ export const createHotelSlice = createSlice({
 // Selector to select the added hotel response  
 export const selectAddHotelRes = (state) => state.createHotelReducer.addHotelRes;  
 export const selectLocation = (state) => state.createHotelReducer.location
-
+export const selectHotelStatus = (state) => state.createHotelReducer.status
 export default createHotelSlice.reducer;  

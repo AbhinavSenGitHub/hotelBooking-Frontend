@@ -2,7 +2,7 @@ import { setCookie } from "../../common/cookie"
 
 export const createUser = async (userData) => {
     try {
-        const response = await fetch("http://localhost:8081/auth/signup",
+        const response = await fetch("/auth/signup",
             {
                 method: "POST",
                 body: JSON.stringify(userData),
@@ -13,20 +13,21 @@ export const createUser = async (userData) => {
         const data = await response.json()
         console.log("data: ", data)
 
-        const newData = JSON.stringify({
-            token: data.token,
-            username: data.userData.username,
-            email: data.userData.email,
-            userType: data.userData.userType
-        })
+        
         if (data.success) {
             // Create a cookie with the JSON string of the response data  
+            const newData = JSON.stringify({
+                token: data.token,
+                username: data.userData.username,
+                email: data.userData.email,
+                userType: data.userData.userType
+            })
+            // const newData = JSON.stringify(data);
+            console.log("newData: ", newData)
             document.cookie = `authCookies=${encodeURIComponent(newData)}; path=/; max-age=${7 * 24 * 60 * 60 * 1000}`;
-            alert("Signup successful")
-        } else {
-            alert("email or username already exists")
+
+            console.log("1. document.cookie: " + document.cookie);
         }
-        console.log("data: ", data)
         return data
     } catch (error) {
         console.log("error: ", error)
@@ -35,7 +36,7 @@ export const createUser = async (userData) => {
 
 export const loginUser = async (userData) => {
     try {
-        const response = await fetch("http://localhost:8081/auth/login", {
+        const response = await fetch("/auth/login", {
             method: "POST",
             body: JSON.stringify(userData),
             headers: {
@@ -46,10 +47,9 @@ export const loginUser = async (userData) => {
         console.log("data: ", data)
         if (data.success) {
             const newData = JSON.stringify(data)
+            console.log("newData for cookies: ", newData)
             document.cookie = `authCookies=${encodeURIComponent(newData)}; path=/; max-age=${7 * 24 * 60 * 60 * 1000}`;
-            alert("Login successful")
-        } else {
-            alert("email or password in valid")
+            
         }
         return data
 

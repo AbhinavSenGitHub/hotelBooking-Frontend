@@ -20,7 +20,7 @@ export const createRoom = async (token, data) => {
             console.log(pair[0] + ', ' + pair[1]);
         }
 
-        const response = await fetch("http://localhost:8081/hotel-owner/create-room", {
+        const response = await fetch("/hotel-owner/create-room", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
