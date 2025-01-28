@@ -14,28 +14,37 @@ import Profile from './features/hotelOwner/Profile/Components/Profile/Profile';
 import HotelRoom from './features/hotelOwner/Profile/Components/Profile/HotelRoom';
 import EditRoomDescription from './features/hotelOwner/RoomDescription/EditRoomDescription';
 import EditHotel from './features/hotelOwner/EditHotel/EditHotel';
-import { useDispatch } from 'react-redux';
-import { fetchAuthCookieAsync } from './common/fetchCookieData';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAuthCookieAsync, selectCookie } from './features/auth/authSlice';
+import BookingDetails from './features/hotelOwner/Profile/Components/Profile/BookingDetails';
+import Description1 from './features/hotelOwner/RoomDescription/Description1';
+import SuccessPage from './features/hotelOwner/RoomDescription/SuccessBooking';
+import GetPlaceDetails from './features/hotelOwner/Home/component/GetPlaceDetails';
 
 
 // hotel owner
 
-
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navbar />,
+    element: <Navbar/>,
     children: [
       { path: "/", element: <Home /> },
       { path: "/display-rooms", element: <DisplayRooms /> },
       { path: "/description", element: <Description /> },
+      { path: "/description1", element: <Description1 /> },
       { path: "/edit-room-details", element: <EditRoomDescription /> },
       { path: "/edit-hotel-details", element: <EditHotel /> },
       {
         path: "/owner-profile",
         element: <Profile />
       },
-      {path: "/owner-hotel-rooms", element: <HotelRoom/>}
+      {path: "/owner-hotel-rooms", element: <HotelRoom/>},
+      {path: "/place-details", element: <GetPlaceDetails/>},
+      {path: "/booking-details", element: <BookingDetails/>},
+      {path: "/cancle", element: <div>Payment canceled.</div>},
+
+      {path: "/success", element: <SuccessPage/>}
     ]
   },
   {
@@ -64,9 +73,13 @@ const router = createBrowserRouter([
 
 ])
 
+
 function App() {
-  const dispatch = useDispatch()
+  const authState = useSelector(selectCookie)
   
+  const dispatch = useDispatch()
+
+  console.log("authState", authState)
   useEffect(() => {
     dispatch(fetchAuthCookieAsync());
 }, [dispatch]);
@@ -76,6 +89,7 @@ function App() {
       <RouterProvider router={router} />
     </div>
   );
+
 }
 
 export default App;

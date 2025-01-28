@@ -3,13 +3,22 @@ import { useLocation } from 'react-router-dom'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useForm, useFieldArray } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectToken } from '../../auth/authSlice';
+import { editHotelAsync } from './EditHotelSlice';
 const EditHotel = () => {
     const location = useLocation().state
     console.log("location :-", location)
     const [imageWidth, setImageWidth] = useState(250); // Default width
     const firstImageRef = useRef(null);
-
-    const { register, handleSubmit, control } = useForm({
+    const [newImage, setNewImageURL] = useState([])
+    const [newFile, setNewFile] = useState([])
+    const [count, setCount] = useState(location?.images?.length)
+    const [deletedImages, setDeletedImages] = useState([])
+    const [previousImage, setPreviousImage] = useState(location.images)
+       const userToken = useSelector(selectToken)
+    const dispatch = useDispatch()
+    const { register, handleSubmit, control, setValue } = useForm({
         defaultValues: {
             hotelName: location.hotelName || '',
             hotelAddress: location.hotelAddress || '',
@@ -30,12 +39,51 @@ const EditHotel = () => {
     });
 
     const onSubmit = (data) => {
-        console.log('Updated Hotel Data:', {
+
+        const formattedData = {
             ...data,
-            keyPoints: data.keyPoints.map((text) => ({ text })),
-        });
+            deletedImages: deletedImages,
+        }
+        console.log(formattedData);
+         dispatch(editHotelAsync({accessToken: userToken, hotelData: formattedData, hotelId: location._id}))
     };
 
+
+    // edit image 
+    const handleImageInput = (e) => {
+        e.preventDefault();
+        const files = Array.from(e.target.files)
+        console.log("files: ", files)
+        const newImages = files.map(file => URL.createObjectURL(file))
+        console.log("newImages: ", newImages)
+        setNewImageURL((previous) => [...previous, ...newImages ])
+        setNewFile((previous) => {
+            const updateImageArray = [...previous, ...files]
+
+            setValue("newImages", updateImageArray)
+            return updateImageArray
+        })
+        setCount(count + 1)
+    }
+
+    const handleDeleteImage = (index, item) => {
+        const updateImage = previousImage.filter((_, i) => i !== index)
+        setValue("images", updateImage);
+        setCount(count - 1);
+        setDeletedImages((previous) => [...previous, item])
+        console.log("deleted images", deletedImages)
+        setPreviousImage(updateImage)
+    }
+
+    const handleDeleteNewImage = (index) => {
+        const updateImage = newImage.filter((_, i) => i !== index)
+        const newFilesImage = newFile.filter((_, i) => i !== index)
+        console.log("deleted 1", newFilesImage)
+        setNewFile(newFilesImage)
+        setNewImageURL(updateImage)
+        setValue("newImages", newFilesImage)
+        setCount(count-1)
+    }
 
     return (
         <div className='my-8 sm:px-16 px-6'>
@@ -44,10 +92,10 @@ const EditHotel = () => {
                 <div>
                     <h2 className="text-3xl">Edit Hotel Details</h2>
 
-
                     <div className='flex flex-wrap gap-4 mt-8'>
-                        {location.images &&
-                            location.images.map((item, index) => (
+                        {previousImage &&
+                            previousImage.map((item, index) => (
+                                <div className='relative'>
                                 <img
                                     key={index}
                                     src={item}
@@ -55,22 +103,42 @@ const EditHotel = () => {
                                     ref={index === 0 ? firstImageRef : null} // Attach ref to the first image
                                     className='h-[250px] rounded-lg shadow-md object-cover'
                                 />
+                                 <button onClick={() => handleDeleteImage(index, item)}
+                                        className="absolute top-2 right-2 bg-white text-black font-extrabold rounded-full p-1 px-2 hover:bg-white focus:outline-none shadow-md">
+                                        ✕
+                                    </button>
+                                    </div>
                             ))}
+
+                            {newImage.length > 0 && newImage.map((item, index) => (
+                            <div className='relative'>
+                                <img
+                                    key={index}
+                                    src={item}
+                                    alt={`Uploaded ${index}`}
+                                    className='h-[250px] rounded-lg shadow-md object-cover'
+                                />
+                                <button onClick={() => handleDeleteNewImage(index, item)}
+                                    className="absolute top-2 right-2 bg-white text-black font-extrabold rounded-full p-1 px-2 hover:bg-white focus:outline-none shadow-md">
+                                    ✕
+                                </button>
+                            </div>
+                        ))
+                        }
+
+
                         <label
                             className='h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-100 transition-all duration-300'
                             style={{ width: `${imageWidth}px` }} // Dynamically set width
                         >
                             <FontAwesomeIcon icon={faUpload} className='text-gray-600 text-3xl' />
                             <span className='mt-2 text-sm text-gray-600'>Click to upload</span>
-                            <span className='mt-2 text-sm text-gray-600'>{location.images.length} / 10</span>
+                            <span className='mt-2 text-sm text-gray-600'>{count} / 7</span>
                             <input
                                 type='file'
                                 accept='image/*'
                                 className='hidden'
-                                onChange={(e) => {
-                                    // Handle file upload here
-                                    console.log(e.target.files[0]);
-                                }}
+                                onChange={handleImageInput}
                             />
                         </label>
                     </div>

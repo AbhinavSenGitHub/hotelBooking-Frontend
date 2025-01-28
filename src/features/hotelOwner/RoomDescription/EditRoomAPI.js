@@ -1,26 +1,26 @@
-export const editHotel = async (accessToken, hotelData, hotelId) => {
+export const editRoom = async (accessToken, roomData, roomId) => {
     try { 
         const formData = new FormData();
-        for (const key in hotelData) {
+        for (const key in roomData) {
             if (key === "keyPoints") {
-                formData.append("keyPoints", JSON.stringify(hotelData[key]));
-            } else if (key !== "newImages" && hotelData.hasOwnProperty(key)) {
-                formData.append(key, hotelData[key]);
+                formData.append("keyPoints", JSON.stringify(roomData[key]));
+            } else if (key !== "newImages" && roomData.hasOwnProperty(key)) {
+                formData.append(key, roomData[key]);
             }
         }
 
-        if (Array.isArray(hotelData?.newImages)) {
-            hotelData.newImages.forEach((image) => {
+        if (Array.isArray(roomData?.newImages)) {
+            roomData.newImages.forEach((image) => {
                 formData.append("newImages", image);
             });
         }
 
-        console.log("api:- ", accessToken, hotelData);
+        console.log("api:- ", accessToken, roomData);
         for (let pair of formData.entries()) {
             console.log(pair[0] + ', ' + pair[1]);
         }
 
-        const response = await fetch("/hotel-owner/update-hotel/"+hotelId, {
+        const response = await fetch("/hotel-owner/update-room/"+roomId, {
             method: "PATCH",
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
@@ -41,21 +41,19 @@ export const editHotel = async (accessToken, hotelData, hotelId) => {
     }
 };
 
-export const deleteHotel = async(accessToken, hotelId) => {
+export const deleteRoom = async (accessToken, roomId) => {
     try{
-        console.log("hotel id ", hotelId, accessToken);
-        const response = await fetch('/hotel-owner/delete-hotel/'+hotelId, {
+        const response = await fetch('/hotel-owner/delete-room/'+roomId, {
             method: 'DELETE',
             headers: {
-                'Authorization': 'Bearer ' + accessToken
+                "Authorization": "Bearer " + accessToken
             }
         })
-    
-        console.log("delete response: " , response)
-        const data = await response.json();
+        const data = await response.json()
+        console.log("data in api", data)
         return data
     }catch(error){
-        console.log("error: ", error)
+        console.log("error in deleting room", error)
         return error
     }
 }

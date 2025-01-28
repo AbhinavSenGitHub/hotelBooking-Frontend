@@ -4,7 +4,7 @@ import { faGoogle, faSkype, faXTwitter } from '@fortawesome/free-brands-svg-icon
 import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
-import { createUserAsync, selectStatus, selectUserResponse } from '../authSlice';
+import { createUserAsync, googleAuthAsync, selectStatus, selectUserResponse } from '../authSlice';
 import Loader from "../../../common/Loader"
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
@@ -14,6 +14,7 @@ const Signup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm()
     const dispatch = useDispatch()
     const loader = useSelector(selectStatus)
+    const [userType, setUserType] = useState('')
     const [status, setStatus] = useState({ show: false, message: "", severity: "success" })
     // const signupResponse = useSelector(selectUserResponse)
     const navigate = useNavigate();
@@ -21,26 +22,30 @@ const Signup = () => {
     const onSubmit = async (data) => {
         console.log(data)
         const response = await dispatch(createUserAsync(data))
-        if (response) {
-            console.log("singupResponse response", response)
-            if (response?.payload?.success) {
-                setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
-                setTimeout(() => navigate("/owner-profile"), 1000)
-
-            } else {
-                console.log("response of singup", response)
-                setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
+        if (loader) {
+            console.log("loader response", loader)
+            setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
+            if (loader === 'idle') {
+                navigate("/email-verify", { state: data.email })
             }
         }
 
     }
 
+    const handleGoogleAuth = () => {
+        if (userType) {
+
+            dispatch(googleAuthAsync({ userType }))
+        } else {
+            setStatus({ show: true, message: "Select User Type first ", severity: "info" })
+        }
+    }
     return (
         <div>
 
             {/* Loader and Blur Background */}
-            {loader === "panding" && (
-               <Loader/>
+            {loader === "pending" && (
+                <Loader />
             )}
 
             {/* status */}
@@ -130,6 +135,7 @@ const Signup = () => {
                                         {...register("userType", {
                                             required: "User type is required",
                                         })}
+                                        onChange={(e) => setUserType(e.target.value)}
                                     >
                                         <option value="">Select...</option>
                                         <option value="hotelOwner">Want to host my hotel</option>
@@ -157,23 +163,28 @@ const Signup = () => {
 
                             {/* Social Login */}
                             <div className="flex justify-center gap-4">
-                                <div className="py-2 px-3 border rounded-full cursor-pointer">
+                                {/* <div className="py-2 px-3 border rounded-full cursor-pointer">
                                     <FontAwesomeIcon icon={faXTwitter} size="lg" />
+                                </div> */}
+                                <div className="py-2 px-3 border rounded-xl w-80% cursor-pointer " onClick={handleGoogleAuth}>
+                                    <div className='flex gap-3'>
+                                        <FontAwesomeIcon
+                                            icon={faGoogle}
+                                            size="lg"
+                                            className="text-[#DB4437] py-1"
+
+                                        />
+
+                                        <p>Register youself with google account</p>
+                                    </div>
                                 </div>
-                                <div className="py-2 px-3 border rounded-full cursor-pointer">
-                                    <FontAwesomeIcon
-                                        icon={faGoogle}
-                                        size="lg"
-                                        className="text-[#DB4437]"
-                                    />
-                                </div>
-                                <div className="py-2 px-3 border rounded-full cursor-pointer">
+                                {/* <div className="py-2 px-3 border rounded-full cursor-pointer">
                                     <FontAwesomeIcon
                                         icon={faSkype}
                                         size="lg"
                                         className="text-[#00AFF0]"
                                     />
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="text-center mt-6">

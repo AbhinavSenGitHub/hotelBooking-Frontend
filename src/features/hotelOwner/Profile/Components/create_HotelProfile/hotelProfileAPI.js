@@ -54,3 +54,22 @@ export const getAllLocaton = async () => {
         return error;
     }
 }
+
+export const getSearchedRooms = async (location, checkIn, checkOut) => {
+    try{
+        console.log("in api ", location, checkIn, checkOut)
+        const response = await fetch(`/search-rooms/${location}/${checkIn}/${checkOut}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        const data = await response.json()
+        console.log("response", data)
+        return data.response
+    }catch(error){
+        console.log("Error in getting rooms by search", error)
+        return error;
+    }
+   
+}

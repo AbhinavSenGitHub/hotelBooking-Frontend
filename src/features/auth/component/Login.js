@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faSkype, faXTwitter } from '@fortawesome/free-brands-svg-icons';
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from "react-redux"
-import { loginUserAsync, selectStatus } from '../authSlice';
+import { googleAuthAsync, loginUserAsync, selectStatus } from '../authSlice';
 import Loader from "../../../common/Loader"
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
@@ -13,29 +13,33 @@ const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm()
     const dispatch = useDispatch()
     const loader = useSelector(selectStatus)
+    const [userType, setUserType] = useState('')
     const [status, setStatus] = useState({ show: false, message: "", severity: "success" })
     const navigate = useNavigate()
-
+    
     const onSubmit = async (data) => {
         console.log(data)
         const response = await dispatch(loginUserAsync(data))
-        if (response) {
-            // console.log("loginResponse ", loginResponse)
+        if (loader) {
+            setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
             if (response?.payload?.success) {
-                setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
-                setTimeout(() => navigate("/"), 1000)
+                navigate("/display-rooms")
             }
-            else{
-                setStatus({ show: true, message: response?.payload?.message, severity: response?.payload?.severity })
-            }
+        }
+    }
+    const handleGoogleAuth = () => {
+        if (userType) {
+            dispatch(googleAuthAsync({ userType }))
+        } else {
+            setStatus({ show: true, message: "Select User Type first ", severity: "info" })
         }
     }
     return (
         <div>
 
-         {/* Loader and Blur Background */}
-         {loader === "panding" && (
-               <Loader/>
+            {/* Loader and Blur Background */}
+            {loader === "pending" && (
+                <Loader />
             )}
 
             {/* status */}
@@ -84,16 +88,39 @@ const Login = () => {
                                     <span class="px-4 text-sm text-gray-500">OR</span>
                                     <hr className='flex-grow  border-gray-300' />
                                 </div>
-                                <div className='flex gap-6 items-center justify-center'>
-                                    <div className='py-2 border px-3 cursor-pointer rounded-full '>
+                                <div className='items-center justify-center'>
+                                    {/* <div className='py-2 border px-3 cursor-pointer rounded-full '>
                                         <FontAwesomeIcon icon={faXTwitter} size="lg" />
+                                    </div> */}
+                                    <div className='mb-6'>
+                                        <label className="text-sm text-gray-800">User Type</label>
+                                        <select
+                                            className="w-full border text-sm px-4 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            {...register("userType", {
+                                                required: "User type is required",
+                                            })}
+                                            onChange={(e) => setUserType(e.target.value)}
+                                        >
+                                            <option value="">Select...</option>
+                                            <option value="hotelOwner">Want to host my hotel</option>
+                                            <option value="customer">Make a booking</option>
+                                        </select>
                                     </div>
-                                    <div className='py-2 border px-3 cursor-pointer rounded-full '>
-                                        <FontAwesomeIcon icon={faGoogle} size="lg" className='text-[#DB4437]' />
+                                    <div className="py-2 px-3 border rounded-xl w-80% cursor-pointer " onClick={handleGoogleAuth}>
+                                        <div className='flex gap-3'>
+                                            <FontAwesomeIcon
+                                                icon={faGoogle}
+                                                size="lg"
+                                                className="text-[#DB4437] py-1"
+
+                                            />
+
+                                            <p>Register youself with google account</p>
+                                        </div>
                                     </div>
-                                    <div className='py-2 border px-3 cursor-pointer rounded-full '>
+                                    {/* <div className='py-2 border px-3 cursor-pointer rounded-full '>
                                         <FontAwesomeIcon icon={faSkype} size="lg" className='text-[#00AFF0]' />
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className='text-center my-4'>
                                     <p className='text-sm'>Already have an account? <Link className='text-blue-700' to="/signup">Create new account?</Link></p>

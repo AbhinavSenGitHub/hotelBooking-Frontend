@@ -24,22 +24,6 @@ const GetHotel = () => {
         // Add more items as needed
     ];
 
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const itemsToShow = 3;
-
-    const scrollLeft = () => {
-        setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? hotels.length - itemsToShow : prevIndex - 1
-        );
-    };
-
-    const scrollRight = () => {
-        setCurrentIndex((prevIndex) =>
-            prevIndex === hotels.length - itemsToShow ? 0 : prevIndex + 1
-        );
-    };
-
-
     const settings = {
         dots: true,
         infinite: true,
@@ -69,15 +53,6 @@ const GetHotel = () => {
             }
         ]
     };
-
-    const cards = [
-        { id: 1, image: asia, title: 'Best place in Aias' },
-        { id: 2, image: japan, title: 'Ryokans in Japan' },
-        { id: 3, image: winter, title: 'Winter spots' },
-        { id: 4, image: wellness, title: 'Wellness Restreat' },
-        { id: 5, image: christmas, title: 'Christmas in London' },
-    ];
-
 
     return (
         <div className='my-20 px-12'>

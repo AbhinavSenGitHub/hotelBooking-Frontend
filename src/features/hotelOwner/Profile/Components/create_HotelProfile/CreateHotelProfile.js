@@ -7,13 +7,12 @@ import { addHotelAsync, addHotelileAsync, getAllLocationAsync, selectAddHotelRes
 import { useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { selectToken } from '../../../../../common/fetchCookieData';
+import { selectToken } from '../../../../auth/authSlice';
 import { Alert, Slide, Stack } from '@mui/material';
 import Loader from '../../../../../common/Loader';
 const CreateHotelProfile = () => {
 
-    const geoName = process.env.REACT_APP_GEO_NAMES_USERNAME
-    console.log("geoName", geoName)
+    
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm()
     const [status, setStatus] = useState({ show: false, message: "", severity: "success" })
     const dispatch = useDispatch()
@@ -48,17 +47,19 @@ const CreateHotelProfile = () => {
     const onSubmit = async (data) => {
         console.log("data", data)
         const response = await dispatch(addHotelAsync({ accessToken: userToken, hotelData: data }))
-        if (response.payload?.successs) {
+        console.log("response in frontend1", response)
+        if (response.payload?.success) {
             console.log("response in frontend", response)
             setStatus({ show: true, message: response.payload?.message, severity: response?.payload?.severity })
-            setTimeout(() => naviage("/room-profile", { state: response.payload.data }), 1000)  
+            console.log("in the frontend")
+             naviage("/room-profile", { state: response.payload.data })
         }else{
             setStatus({ show: true, message: response.payload?.message, severity: response?.payload?.severity })
         }
     }
 
     const handleFileInput = (e) => {
-
+        e.preventDefault();
         console.log("file input", e.target.files)
         const files = Array.from(e.target.files)
         setFileInput(e.target.files)
@@ -88,6 +89,7 @@ const CreateHotelProfile = () => {
         // Remove corresponding file from fileInput
         const updatedFiles = Array.from(fileInput).filter((_, i) => i !== index);
         setFileInput(updatedFiles);
+        console.log("updated files: ", updatedFiles)
 
         // Update form value
         setValue("images", updatedFiles);
@@ -104,7 +106,7 @@ const CreateHotelProfile = () => {
 
     return (
 
-        <div>
+        <div className='relative'>
 
             {/* Loader and Blur Background */}
             {loader === "pending" && (
@@ -123,7 +125,7 @@ const CreateHotelProfile = () => {
                 </Slide>
             )}
             <div>
-                <div className='w-full py-6 border-b-2 mx-6'>
+                <div className='w-full py-6 border-b-2'>
                     <h2 className='flex justify-start px-6  mt-8 text-2xl'>Add your hotel details here</h2>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-wrap lg:flex-nowrap'>
@@ -159,7 +161,7 @@ const CreateHotelProfile = () => {
                                                     alt={`Uploaded ${index}`}
                                                 />
                                                 {/* Delete Icon */}
-                                                <button
+                                                <div
                                                     onClick={(e) => {
                                                         e.stopPropagation(); // Prevent triggering the click on image
                                                         handleDeleteImage(index); // Delete the image
@@ -167,7 +169,7 @@ const CreateHotelProfile = () => {
                                                     className="absolute top-2 left-8 bg-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
                                                     <FontAwesomeIcon icon={faTrashAlt} className="text-red-600" />
-                                                </button>
+                                                </div>
                                             </div>
                                         ))}
                                     </Carousel>
@@ -213,9 +215,9 @@ const CreateHotelProfile = () => {
                                 ))}
                                 {/* Show "Add More" button only if there are less than 5 points */}
                                 {keyPoints.length < 5 && (
-                                    <button className='bg-blue-600 inline-block cursor-pointer px-3 py-1 mt-3 text-sm text-white rounded-lg' type="button" onClick={handleAddPoint}>
+                                    <div className='inline-block cursor-pointer px-3 py-1 my-3 text-white rounded-lg bg-[#003580] text-sm sm:text-base transform transition duration-150 active:scale-95' type="button" onClick={handleAddPoint}>
                                         Add More
-                                    </button>
+                                    </div>
                                 )}
                             </div>
 
@@ -290,7 +292,7 @@ const CreateHotelProfile = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button className='bg-blue-600 inline-block cursor-pointer px-3 py-1 mt-3 text-sm text-white rounded-lg' type="submit">Submit</button>
+                            <button className='inline-block cursor-pointer px-3 py-1 my-3 text-white rounded-lg bg-[#003580] text-sm sm:text-base transform transition duration-150 active:scale-95' type="submit">Submit</button>
                         </div>
                     </div>
                 </form>

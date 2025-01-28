@@ -17,6 +17,7 @@ const authCookieSlice = createSlice({
     loading: false,
     error: null,
   },
+  
   extraReducers: (builder) => {
     builder
       .addCase(fetchAuthCookieAsync.pending, (state) => {
@@ -24,14 +25,14 @@ const authCookieSlice = createSlice({
       })
       .addCase(fetchAuthCookieAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload.token;
-        state.cookie = action.payload.userData;
-        console.log("state.cookie",state.cookie)
+        state.token = action.payload?.token;
+        state.cookie = action.payload;
+        console.log("state.cookie",action.payload)
       })
   },
 });
 
-// Selector to get token from the state
+// // Selector to get token from the state
 export const selectToken = (state) => state.authCookieReducer.token;
 export const selectCookie = (state) => state.authCookieReducer.cookie; 
 

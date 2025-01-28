@@ -3,18 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useForm, useFieldArray } from 'react-hook-form';
+import { editRoomAsync } from './EditRoomSlice';
+import { selectToken } from '../../auth/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 const EditRoomDescription = () => {
     const location = useLocation().state
+    const [previousImage, setPreviousImage] = useState(location.roomImages)
+    const [newImage, setNewImageURL] = useState([])
+    const [count, setCount] = useState(location?.roomImages?.length)
+    const [deletedImages, setDeletedImages] = useState([])
+    const [newFile, setNewFile] = useState([])
     console.log("edit room:", location)
     const [imageWidth, setImageWidth] = useState(250); // Default width
     const firstImageRef = useRef(null);
 
-    const textareaRef = useRef(null)
-    const handleInput = () => {
-        const textarea = textareaRef.current;
-        textarea.style.height = '200px'  // reset height
-        textarea.style.height = `${textarea.scrollHeight}px` // set height based on content
-    }
+   const dispatch = useDispatch()
+   const userToken = useSelector(selectToken)
     useEffect(() => {
         if (firstImageRef.current) {
             setImageWidth(firstImageRef.current.offsetWidth);
@@ -22,7 +26,7 @@ const EditRoomDescription = () => {
     }, [location.roomImages]); // Recalculate if images change
 
 
-    const { register, handleSubmit, control } = useForm({
+    const { register, handleSubmit, control, setValue, getValues } = useForm({
         defaultValues: {
             roomNumber: location.roomNumber || '',
             floorNumber: location.floorNumber || '',
@@ -31,7 +35,7 @@ const EditRoomDescription = () => {
             bathroom: location.bathRoom ? 'Yes' : 'No',
             price: location.price || '',
             description: location.description || '',
-            keyPoints: location.keyPoints.map((kp) => kp.text || ''), // Assuming keyPoints have a 'text' property
+            keyPoints: location.keyPoints,// Assuming keyPoints have a 'text' property
             roomImages: location.roomImages || [],
         },
     });
@@ -41,50 +45,110 @@ const EditRoomDescription = () => {
         name: 'keyPoints', // Handle keyPoints array
     });
 
+
     const onSubmit = (data) => {
         const formattedData = {
             ...data,
             bathRoom: data.bathroom === 'Yes',
-            keyPoints: data.keyPoints.map((text) => ({ text })), // Assuming keyPoints is an array of objects
+            deletedImages: deletedImages,
+            // keyPoints: data.keyPoints.map((text) => ({ text })), // Assuming keyPoints is an array of objects
         };
         console.log(formattedData);
+
+        dispatch(editRoomAsync({accessToken: userToken, roomData: formattedData, roomId: location._id}))
+
     };
 
+    const handleImageInput = (e) => {
+        e.preventDefault();
+        const files = Array.from(e.target.files)
+        console.log("files: ", files)
+        const newImages = files.map(file => URL.createObjectURL(file))
+        console.log("newImages: ", newImages)
+        setNewImageURL((previous) => [...previous, ...newImages ])
+        setNewFile((previous) => {
+            const updateImageArray = [...previous, ...files]
+
+            setValue("newImages", updateImageArray)
+            return updateImageArray
+        })
+        setCount(count + 1)
+    }
+
+    const handleDeleteImage = (index, item) => {
+        const updateImage = previousImage.filter((_, i) => i !== index)
+        setValue("roomImages", updateImage);
+        setCount(count - 1);
+        setDeletedImages((previous) => [...previous, item])
+        console.log("deleted images", deletedImages)
+        setPreviousImage(updateImage)
+    }
+
+    const handleDeleteNewImage = (index) => {
+        const updateImage = newImage.filter((_, i) => i !== index)
+        const newFilesImage = newFile.filter((_, i) => i !== index)
+        console.log("deleted 1", newFilesImage)
+        setNewFile(newFilesImage)
+        setNewImageURL(updateImage)
+        setValue("newImages", newFilesImage)
+        setCount(count-1)
+    }
     return (
         <div className='my-8 sm:px-16 px-6'>
-            
+
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
                     <h2 className='text-3xl'>Edit Room Details</h2>
 
                     <div className='flex flex-wrap gap-4 mt-8'>
-                        {location.roomImages &&
-                            location.roomImages.map((item, index) => (
+                        {previousImage &&
+                            previousImage.map((item, index) => (
+                                <div className='relative'>
+                                    <img
+                                        key={index}
+                                        src={item}
+                                        alt={`Room ${index + 1}`}
+                                        ref={index === 0 ? firstImageRef : null} // Attach ref to the first image
+                                        className='h-[250px] rounded-lg shadow-md object-cover'
+                                    />
+                                    <button onClick={() => handleDeleteImage(index, item)}
+                                        className="absolute top-2 right-2 bg-white text-black font-extrabold rounded-full p-1 px-2 hover:bg-white focus:outline-none shadow-md">
+                                        ✕
+                                    </button>
+                                </div>
+                            ))
+                        }
+
+                        {newImage.length > 0 && newImage.map((item, index) => (
+                            <div className='relative'>
                                 <img
                                     key={index}
                                     src={item}
-                                    alt={`Room ${index + 1}`}
-                                    ref={index === 0 ? firstImageRef : null} // Attach ref to the first image
+                                    alt={`Uploaded ${index}`}
                                     className='h-[250px] rounded-lg shadow-md object-cover'
                                 />
-                            ))}
-                        <label
+                                <button onClick={() => handleDeleteNewImage(index, item)}
+                                    className="absolute top-2 right-2 bg-white text-black font-extrabold rounded-full p-1 px-2 hover:bg-white focus:outline-none shadow-md">
+                                    ✕
+                                </button>
+                            </div>
+                        ))
+                        }
+
+                        {count < 7 ? <label
                             className='h-[250px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-100 transition-all duration-300'
                             style={{ width: `${imageWidth}px` }} // Dynamically set width
                         >
                             <FontAwesomeIcon icon={faUpload} className='text-gray-600 text-3xl' />
                             <span className='mt-2 text-sm text-gray-600'>Click to upload</span>
-                            <span className='mt-2 text-sm text-gray-600'>{location.roomImages.length} / 10</span>
+                            <span className='mt-2 text-sm text-gray-600'>{count} / 7</span>
                             <input
                                 type='file'
                                 accept='image/*'
                                 className='hidden'
-                                onChange={(e) => {
-                                    // Handle file upload here
-                                    console.log(e.target.files[0]);
-                                }}
+                                onChange={handleImageInput}
                             />
-                        </label>
+                        </label> : <div></div>}
                     </div>
 
                     <div className='mt-16 flex flex-col gap-4'>
@@ -146,6 +210,15 @@ const EditRoomDescription = () => {
                             </div>
                         </div>
 
+                        {/* <div>
+                            {location.keyPoints.map((item, index) => (
+                                <div>
+                                    <label>Point {index+1}</label>
+                                    <input {...register(`Point${index}`)}/>
+                                </div>
+                            ))}
+                        </div> */}
+
                         <div className='flex flex-col gap-3'>
                             <label>Description</label>
                             <textarea
@@ -155,18 +228,18 @@ const EditRoomDescription = () => {
                             />
                         </div>
 
-                        <div className='flex gap-4 flex-wrap'>
+                        {/* <div className='flex gap-4 flex-wrap'>
                             {keyPointsFields.map((field, index) => (
                                 <div key={field.id} className='flex flex-col gap-3'>
                                     <label>{index + 1}. Key Points</label>
                                     <input
                                         type='text'
-                                        {...register(`keyPoints.${index}`)}
+                                        {...register(`${index}`)}
                                         className='border-2 px-2 py-2 w-[450px] rounded-lg'
                                     />
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
 
                         <button
                             type='submit'

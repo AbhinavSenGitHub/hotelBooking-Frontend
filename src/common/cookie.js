@@ -41,24 +41,6 @@ export const fetchToken = async () => {
     }  
 } 
 
-// export const fetchAuthCookie = async () => {  
-//     const token = getCookie("authCookies");
-//     console.log("token in fetchToken: ", token)  
-//     if (!token) {  
-//         console.log("authToken cookie not found");  
-//         return null; // Return null if the token is not found  
-//     }  
-    
-//     try {  
-//         const decodedToken = decodeURIComponent(token);  
-//         const jsonObject = JSON.parse(decodedToken);  
-//         console.log("jsonObject.token", jsonObject);  
-//         return jsonObject
-//     } catch (error) {  
-//         console.log("Error in fetching token: ", error);  
-//         return null; // Return null on error  
-//     }  
-// } 
 export const fetchAuthCookie = async () => {
     try {
         // Fetch the cookie data from the API

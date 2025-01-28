@@ -1,11 +1,12 @@
 
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';  
-import { addHotel, getAllLocaton } from './hotelProfileAPI';  
+import { addHotel, getAllLocaton, getSearchedRooms } from './hotelProfileAPI';  
 
 const initialState = {  
   value: 0,  
   status: 'idle',  
   addHotelRes: null,  
+  searchRoom: null,
   location: null
 };  
 
@@ -21,15 +22,23 @@ export const addHotelAsync = createAsyncThunk(
 
 export const getAllLocationAsync = createAsyncThunk("hotel/location", async () => {
   const response = await getAllLocaton()
-  console.log("response in async: ", response)
   return response
 })
 
+export const getSearchedRoomsAsync = createAsyncThunk("hotel/searchRoom", async ({location, checkIn, checkOut}) => {
+  const response = await getSearchedRooms(location, checkIn, checkOut)
+  return response
+})
 
 // Create hotel slice  
 export const createHotelSlice = createSlice({  
   name: 'hotel',  
   initialState,  
+  reducers : {
+    resetSearchRoom: (state) => {
+      state.searchRoom = null; // Resetting searchRoom to null
+    },
+  },
   extraReducers: (builder) => {  
     builder  
       .addCase(addHotelAsync.pending, (state) => {  
@@ -46,6 +55,13 @@ export const createHotelSlice = createSlice({
         state.status = "idle"
         state.location = action.payload.data
       })
+      .addCase(getSearchedRoomsAsync.pending, (state) => {
+        state.status = "pending"
+      })
+      .addCase(getSearchedRoomsAsync.fulfilled, (state, action) => {
+        state.status = "idle"
+        state.searchRoom = action.payload
+      })
   },  
 });  
 
@@ -54,4 +70,6 @@ export const createHotelSlice = createSlice({
 export const selectAddHotelRes = (state) => state.createHotelReducer.addHotelRes;  
 export const selectLocation = (state) => state.createHotelReducer.location
 export const selectHotelStatus = (state) => state.createHotelReducer.status
+export const selectSearchRoom = (state) => state.createHotelReducer.searchRoom
+export const { resetSearchRoom } = createHotelSlice.actions;
 export default createHotelSlice.reducer;  

@@ -11,19 +11,19 @@ const HotelCard = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const allRooms = useSelector(selectAllRooms)
-    console.log("all rooms", allRooms)
-
+    console.log("all rooms is hotelCard", allRooms)
     useEffect(() => {
-        dispatch(getAllRoomsAsync())
+         if (!allRooms || allRooms?.rooms?.length === 0) {
+        dispatch(getAllRoomsAsync());
+    }
+    
     }, [dispatch])
 
     const handleClick = (item) => {
-        console.log("item, ", item)
         navigate("/description", { state: item })
     }
 
     // slider function
-
     var settings = {
         infinite: false,
         speed: 500,

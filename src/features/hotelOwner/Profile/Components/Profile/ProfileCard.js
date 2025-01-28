@@ -6,10 +6,12 @@ const ProfileCard = ({ image, address, hotelName, numberOfRoom, items }) => {
   const navigate = useNavigate()
 
   const handleClick = (item) => {
+    console.log("itemssss", item)
     navigate("/owner-hotel-rooms", { state: item })
   }
 
   const handleEdit = (item) => {
+    console.log("itemssss", item)
     navigate("/edit-hotel-details", {state: item})
   }
   return (
