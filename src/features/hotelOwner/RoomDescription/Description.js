@@ -1,12 +1,12 @@
 import { faBath, faCab, faDog, faParking, faTv, faWifi } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import Loader from '../../../common/Loader'
 import { useDispatch, useSelector } from 'react-redux'
 import { createBookingAsync, selectStatus } from './BookingApis/bookingSlice'
-import { selectToken } from '../../auth/authSlice'
+import { selectToken, selectUserResponse } from '../../auth/authSlice'
 import {loadStripe} from '@stripe/stripe-js';
 
 const Description = () => {
@@ -16,6 +16,7 @@ const Description = () => {
   const location = useLocation()
   const userToken = useSelector(selectToken)
   const loader = useSelector(selectStatus)
+  const userResponse = useSelector(selectUserResponse)
   const memoizedLocation = useMemo(() => location.state, [location.state])
   const navigate = useNavigate()
   console.log("location in description", memoizedLocation.hotelDetails._id)
@@ -23,6 +24,9 @@ const Description = () => {
   setValue("roomId", memoizedLocation._id)
   setValue("hotelId", memoizedLocation?.hotelDetails?._id)
   const onSubmit = async (data) => {
+    if(!userResponse){
+      navigate("/login")
+    }
     await dispatch(createBookingAsync({ token: userToken, data: data }))
     if (loader === 'idle') {
       // navigate("/owner-profile/")

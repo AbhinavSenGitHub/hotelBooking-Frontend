@@ -20,6 +20,8 @@ import BookingDetails from './features/hotelOwner/Profile/Components/Profile/Boo
 import Description1 from './features/hotelOwner/RoomDescription/Description1';
 import SuccessPage from './features/hotelOwner/RoomDescription/SuccessBooking';
 import GetPlaceDetails from './features/hotelOwner/Home/component/GetPlaceDetails';
+import CardContent from './features/hotelOwner/Home/CardContent/CardContent';
+import ProtectedRouter from './features/auth/ProtectedRouter';
 
 
 // hotel owner
@@ -27,24 +29,51 @@ import GetPlaceDetails from './features/hotelOwner/Home/component/GetPlaceDetail
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navbar/>,
+    element: <Navbar />,
     children: [
       { path: "/", element: <Home /> },
       { path: "/display-rooms", element: <DisplayRooms /> },
       { path: "/description", element: <Description /> },
-      { path: "/description1", element: <Description1 /> },
-      { path: "/edit-room-details", element: <EditRoomDescription /> },
-      { path: "/edit-hotel-details", element: <EditHotel /> },
+      {
+        path: "/description1",
+        element: 
+        <ProtectedRouter>
+          <Description1 />
+        </ProtectedRouter>
+      },
+      { path: "/edit-room-details", element: 
+      <ProtectedRouter>
+      <EditRoomDescription />
+      </ProtectedRouter> 
+      },
+      { path: "/edit-hotel-details", element: 
+        <ProtectedRouter>
+        
+        <EditHotel /> 
+        </ProtectedRouter>
+        },
+      { path: "/place-content", element: <CardContent /> },
       {
         path: "/owner-profile",
-        element: <Profile />
+        element: 
+        <ProtectedRouter>
+        <Profile />
+        </ProtectedRouter>
       },
-      {path: "/owner-hotel-rooms", element: <HotelRoom/>},
-      {path: "/place-details", element: <GetPlaceDetails/>},
-      {path: "/booking-details", element: <BookingDetails/>},
-      {path: "/cancle", element: <div>Payment canceled.</div>},
+      { path: "/owner-hotel-rooms", element: 
+        <ProtectedRouter>
+      <HotelRoom />
+      </ProtectedRouter>
+     },
+      { path: "/place-details", element: <GetPlaceDetails /> },
+      { path: "/booking-details", element: 
+        <ProtectedRouter>
+      <BookingDetails /> 
+      </ProtectedRouter>
+      },
+      { path: "/cancle", element: <div>Payment canceled.</div> },
 
-      {path: "/success", element: <SuccessPage/>}
+      { path: "/success", element: <SuccessPage /> }
     ]
   },
   {
@@ -76,13 +105,12 @@ const router = createBrowserRouter([
 
 function App() {
   const authState = useSelector(selectCookie)
-  
-  const dispatch = useDispatch()
 
+  const dispatch = useDispatch()
   console.log("authState", authState)
   useEffect(() => {
     dispatch(fetchAuthCookieAsync());
-}, [dispatch]);
+  }, [dispatch]);
 
   return (
     <div className="App ">

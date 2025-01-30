@@ -1,17 +1,16 @@
-import React, { useRef, useState } from 'react'
-import location1 from "./location_images/location1.jpg"
+import React from 'react'
 import asia from "../image/asia.webp"
 import japan from "../image/japan.webp"
 import wellness from "../image/wellness.jpg"
 import winter from "../image/winter.webp"
 import christmas from "../image/christmas.webp"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faArrowRight, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Map from '../Map'
+import { Link, useNavigate } from 'react-router-dom'
 
 const GetHotel = () => {
 
@@ -52,10 +51,15 @@ const GetHotel = () => {
                 }
             }
         ]
-    };
+    }
+    const navigate = useNavigate()
 
+    const handelClick = (data) => {
+        navigate('/place-content', {state: data})
+    }
     return (
         <div className='my-20 px-12'>
+
             <div className='flex flex-col mb-8  gap-2'>
                 <h1 className='text-2xl font-medium'>Find Hotels Near the Hottest Trending Destinations</h1>
                 <p className=''>Explore popular spots and stay just minutes from the action.</p>
@@ -73,7 +77,7 @@ const GetHotel = () => {
                                 <div class="absolute inset-0 flex translate-y-[70%] flex-col items-center justify-center px-9 text-center transition-all duration-500 group-hover:translate-y-0">
                                     <h1 class="font-dmserif text-xl font-bold text-white">{card.title}</h1>
                                     <p class="mb-3 text-md italic text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">{card.content}</p>
-                                    <button class="rounded-full bg-neutral-900 py-2 px-3.5 font-com text-sm capitalize text-white shadow shadow-black/60">See More</button>
+                                    <button onClick={() => handelClick(card)} class="rounded-full bg-neutral-900 py-2 px-3.5 font-com text-sm capitalize text-white shadow shadow-black/60">See More</button>
                                 </div>
                             </div>
                         </div>
