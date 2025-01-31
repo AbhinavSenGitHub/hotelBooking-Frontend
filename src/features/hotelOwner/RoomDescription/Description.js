@@ -33,12 +33,6 @@ const Description = () => {
     }
     console.log("data", data)
   }
-
-  // const makePayment = async () => {
-  //   const stripe = await loadStripe('pk_test_51QgMoSPP3KYYBpggjzobGaWfAOxueFoaROCvsmULHoSxQCb7QSEk8XuwUTrBpt7bzbFsEWYXx38C0iw4LkJYev1W00DdEsfle7');
-
-  // }
-
   return (
     <div>
       {loader === 'pending' &&
