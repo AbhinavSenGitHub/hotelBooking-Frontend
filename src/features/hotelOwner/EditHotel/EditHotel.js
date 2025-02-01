@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useForm, useFieldArray } from 'react-hook-form';
@@ -15,6 +15,7 @@ const EditHotel = () => {
     const [newFile, setNewFile] = useState([])
     const [count, setCount] = useState(location?.images?.length)
     const [deletedImages, setDeletedImages] = useState([])
+    const navigate = useNavigate()
     const [previousImage, setPreviousImage] = useState(location.images)
        const userToken = useSelector(selectToken)
     const dispatch = useDispatch()
@@ -38,14 +39,17 @@ const EditHotel = () => {
         name: 'keyPoints',
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
 
         const formattedData = {
             ...data,
             deletedImages: deletedImages,
         }
         console.log(formattedData);
-         dispatch(editHotelAsync({accessToken: userToken, hotelData: formattedData, hotelId: location._id}))
+        const response = await dispatch(editHotelAsync({accessToken: userToken, hotelData: formattedData, hotelId: location._id}))
+        if(response){
+            navigate('/owner-profile')
+        }
     };
 
 

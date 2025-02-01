@@ -21,7 +21,8 @@
 
 export const createBooking = async (token, data) => {
     try {
-        console.log(data, token);
+        console.log( token);
+        console.log( data );
         const response = await fetch('/create-checkout-session', {
             method: 'POST',
             headers: {

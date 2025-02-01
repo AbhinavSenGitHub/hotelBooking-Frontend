@@ -22,6 +22,7 @@ import SuccessPage from './features/hotelOwner/RoomDescription/SuccessBooking';
 import GetPlaceDetails from './features/hotelOwner/Home/component/GetPlaceDetails';
 import CardContent from './features/hotelOwner/Home/CardContent/CardContent';
 import ProtectedRouter from './features/auth/ProtectedRouter';
+import Footer from './features/hotelOwner/Home/component/Footer';
 
 
 // hotel owner
@@ -56,9 +57,7 @@ const router = createBrowserRouter([
       {
         path: "/owner-profile",
         element: 
-        <ProtectedRouter>
         <Profile />
-        </ProtectedRouter>
       },
       { path: "/owner-hotel-rooms", element: 
         <ProtectedRouter>
@@ -115,6 +114,7 @@ function App() {
   return (
     <div className="App ">
       <RouterProvider router={router} />
+      <Footer/>
     </div>
   );
 

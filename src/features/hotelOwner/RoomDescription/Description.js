@@ -1,13 +1,14 @@
 import { faBath, faCab, faDog, faParking, faTv, faWifi } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import Loader from '../../../common/Loader'
 import { useDispatch, useSelector } from 'react-redux'
 import { createBookingAsync, selectStatus } from './BookingApis/bookingSlice'
 import { selectToken, selectUserResponse } from '../../auth/authSlice'
-import {loadStripe} from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import ImageModal from './ImageModal'
 
 const Description = () => {
 
@@ -18,21 +19,33 @@ const Description = () => {
   const loader = useSelector(selectStatus)
   const userResponse = useSelector(selectUserResponse)
   const memoizedLocation = useMemo(() => location.state, [location.state])
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleImageClick = () => {
+    setIsModalOpen(true); // Open the modal on image click
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Close the modal
+  };
   const navigate = useNavigate()
-  console.log("location in description", memoizedLocation.hotelDetails._id)
+  console.log("location in description", memoizedLocation)
   setValue("amount", memoizedLocation.price)
   setValue("roomId", memoizedLocation._id)
   setValue("hotelId", memoizedLocation?.hotelDetails?._id)
   const onSubmit = async (data) => {
-    if(!userResponse){
+    if (!userResponse) {
       navigate("/login")
     }
-    await dispatch(createBookingAsync({ token: userToken, data: data }))
+    const resp = await dispatch(createBookingAsync({ token: userToken, data: data }))
+    
     if (loader === 'idle') {
       // navigate("/owner-profile/")
     }
     console.log("data", data)
   }
+
+  const length = (memoizedLocation.hotelDetails.images.length + memoizedLocation.roomImages.length) - 5
   return (
     <div>
       {loader === 'pending' &&
@@ -42,41 +55,47 @@ const Description = () => {
       {memoizedLocation && <div className='my-10 px-4 sm:px-16 '>
         {memoizedLocation.hotelDetails && <div className='mb-10'>
           <h1 className='text-2xl font-medium'>{memoizedLocation.hotelDetails.hotelName}</h1>
-          <p className='text-lg text-gray-600'>{memoizedLocation.hotelDetails.hotelAddress}</p>
+          <p className='text-lg text-gray-600'>{memoizedLocation.hotelDetails.hotelAddress} {memoizedLocation.hotelDetails.city}, {memoizedLocation.hotelDetails.pincode}</p>
         </div>}
 
         {/* Main grid container */}
         <div className='grid grid-cols-1 lg:grid-cols-4 lg:gap-6'>
 
           {/* Left section */}
-          <div className='lg:col-span-3 flex flex-col gap-3'>
+          <div className='lg:col-span-3 flex flex-col gap-3 mb-8'>
 
             {/* images */}
 
             <div className='flex flex-wrap gap-3'>
               <div className='md:flex fle-wrap custom-1427:flex-col  gap-3'>
-                <div className='h-[250px] lg:w-[250px] mb-3'><img className=' h-[250px] object-cover  rounded-lg' src={memoizedLocation.roomImages[0]} alt='room image' /></div>
-                <div className='h-[250px] lg:w-[250px]'><img className=' h-full w-full object-cover  rounded-lg' src={memoizedLocation.roomImages[1]} alt='room image' /></div>
+                <div className='h-[250px] lg:w-[250px] mb-3'><img className=' h-[250px] object-cover  rounded-lg' src={memoizedLocation.roomImages[0]} alt='room image' onClick={handleImageClick} /></div>
+                <div className='h-[250px] lg:w-[250px]'><img className=' h-full w-full object-cover  rounded-lg' src={memoizedLocation.roomImages[1]} alt='room image' onClick={handleImageClick} /></div>
 
 
               </div>
 
               <div className='custom-1427:w-fit w-full'>
                 <div className='custom-1427:h-[350px] md:h-[350px] h-[250px] custom-1427:w-full sm:w-3/4  mb-3'>
-                  <img className=' h-full w-full rounded-lg' src={memoizedLocation.roomImages[2]} />
+                  <img className=' h-full w-full rounded-lg' src={memoizedLocation.roomImages[2]} onClick={handleImageClick} />
                 </div>
                 <div className='flex flex-wrap gap-3'>
                   <div className='lg:h-[160px] h-[250px]'>
-                    <img className=' h-full w-full rounded-lg' src={memoizedLocation.roomImages[3]} />
+                    <img className=' h-full w-full rounded-lg' src={memoizedLocation.roomImages[3]} onClick={handleImageClick} />
                   </div>
-                  <div className='lg:h-[160px] h-[250px]'>
-                    <img className='h-full w-full rounded-lg' src={memoizedLocation.roomImages[4]} />
+                  <div className='relative lg:h-[160px] h-[250px]'>
+                    <img className='h-full w-full rounded-lg' src={memoizedLocation.roomImages[4]} onClick={handleImageClick} />
+                    <div className='absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg' onClick={handleImageClick}>
+                      <span className='text-white text-lg font-semibold cursor-pointer' onClick={handleImageClick}>{length-1}+ images</span>
+                    </div>
                   </div>
+                  {/* Modal Component */}
+                  <ImageModal isOpen={isModalOpen} onClose={handleCloseModal} hotelImage={memoizedLocation.hotelDetails.images} roomImage={memoizedLocation.roomImages}>
+                    {/* You can add the images or any other content here */}
+                    <img src={memoizedLocation.roomImages[4]} alt="Room Large" className="w-full h-auto" />
+                  </ImageModal>
                 </div>
               </div>
             </div>
-
-
 
             {/* Amenities */}
             <div className='flex gap-3 flex-wrap'>
@@ -98,6 +117,18 @@ const Description = () => {
             </div>
 
             {/* Descriptions */}
+            <div className="text-gray-800 px-2">
+              <h2 className="text-2xl font-semibold my-4">Booking Details</h2>
+              <p className="text-lg font-medium">Room Number: <span className="font-normal">{memoizedLocation.roomNumber}</span></p>
+              <p className="text-lg font-medium">Floor Number: <span className="font-normal">{memoizedLocation.floorNumber}</span></p>
+              <p className="text-lg font-medium">Room Capacity: <span className="font-normal">{memoizedLocation.capacity}</span></p>
+              <p className="text-lg font-medium">
+                Availability: <span className={`font-semibold ${memoizedLocation.isBooked ? 'text-red-500' : 'text-green-500'}`}>
+                  {memoizedLocation.isBooked ? 'Booked' : 'Available'}
+                </span>
+              </p>
+              <p className="text-lg font-medium">Number of Beds: <span className="font-normal">{memoizedLocation.numberOfBed}</span></p>
+            </div>
             <div className=''>
               <h2 className='text-xl font-medium my-3'>Room Description</h2>
               <p>{memoizedLocation.description}</p>
@@ -113,17 +144,36 @@ const Description = () => {
           <div className='lg:w-fit  h-fit flex flex-col gap-3'>
             <div className='border px-2 rounded-xl py-2'>
               <h2 className='text-xl font-medium'>Amenities</h2>
-              <ul className='px-1 clear-start'>
-                {memoizedLocation && memoizedLocation.keyPoints.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <li>{item.point1}</li>
-                    <li>{item.point2}</li>
-                    <li>{item.point3}</li>
-                    <li>{item.point4}</li>
-                    <li>{item.point5}</li>
-                  </React.Fragment>
-                ))}
-              </ul>
+              <div className="px-1 clear-start">
+                {memoizedLocation &&
+                  memoizedLocation.keyPoints.map((item, index) => (
+                    <div key={index} className=" rounded-lg p-3 my-2 shadow-sm">
+                      <ul className="list-disc list-inside text-gray-700 space-y-1 px-3">
+                        {item.point1 && <li className="font-medium">{item.point1}</li>}
+                        {item.point2 && <li>{item.point2}</li>}
+                        {item.point3 && <li>{item.point3}</li>}
+                        {item.point4 && <li>{item.point4}</li>}
+                        {item.point5 && <li>{item.point5}</li>}
+                      </ul>
+                    </div>
+                  ))}
+              </div>
+              <div className="px-1 clear-start">
+                {memoizedLocation &&
+                  memoizedLocation.hotelDetails
+                    .keyPoints.map((item, index) => (
+                      <div key={index} className=" rounded-lg p-3 my-2 shadow-sm">
+                        <ul className="list-disc list-inside text-gray-700 space-y-1 px-3">
+                          {item.point1 && <li className="font-medium">{item.point1}</li>}
+                          {item.point2 && <li>{item.point2}</li>}
+                          {item.point3 && <li>{item.point3}</li>}
+                          {item.point4 && <li>{item.point4}</li>}
+                          {item.point5 && <li>{item.point5}</li>}
+                        </ul>
+                      </div>
+                    ))}
+              </div>
+
             </div>
 
             <div className='py-2 rounded-xl'>

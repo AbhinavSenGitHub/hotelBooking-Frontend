@@ -1,3 +1,5 @@
+import { faEnvelope, faMailBulk, faPhone } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 
 const Footer = () => {
@@ -6,7 +8,6 @@ const Footer = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission logic (e.g., send email)
         console.log({ email, message });
         setEmail('')
         setMessage('')
@@ -69,10 +70,15 @@ const Footer = () => {
 
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-white text-[#003580] rounded-full hover:bg-[#002766] hover:text-white transition-all duration-300 w-full"
+                            className="px-6 py-3 bg-white text-[#003580] rounded-full hover:bg-[#002766] hover:text-white transition-all duration-300 w-full mb-10"
                         >
                             Submit
                         </button>
+
+                        <div className='h-fll flex gap-4 items-end'>
+                            <p><FontAwesomeIcon className='mr-1' icon={faEnvelope}/>: abhinavsen413@gmail.com</p>
+                            <p><FontAwesomeIcon  className='mr-1'  icon={faPhone}/>:  +91 7049564766</p>
+                        </div>
                     </form>
                 </div>
             </div>

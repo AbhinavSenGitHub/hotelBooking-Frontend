@@ -101,7 +101,6 @@ const Home = () => {
       <Clients />
       <LocationCard />
       <HotelCard />
-      <Footer/>
     </div>
   )
 }

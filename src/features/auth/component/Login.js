@@ -16,7 +16,6 @@ const Login = () => {
     const [userType, setUserType] = useState('')
     const [status, setStatus] = useState({ show: false, message: "", severity: "success" })
     const navigate = useNavigate()
-    
     const onSubmit = async (data) => {
         console.log(data)
         const response = await dispatch(loginUserAsync(data))
@@ -89,16 +88,11 @@ const Login = () => {
                                     <hr className='flex-grow  border-gray-300' />
                                 </div>
                                 <div className='items-center justify-center'>
-                                    {/* <div className='py-2 border px-3 cursor-pointer rounded-full '>
-                                        <FontAwesomeIcon icon={faXTwitter} size="lg" />
-                                    </div> */}
                                     <div className='mb-6'>
                                         <label className="text-sm text-gray-800">User Type</label>
                                         <select
                                             className="w-full border text-sm px-4 py-2 rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            {...register("userType", {
-                                                required: "User type is required",
-                                            })}
+                                            {...register("userType")}
                                             onChange={(e) => setUserType(e.target.value)}
                                         >
                                             <option value="">Select...</option>
@@ -118,9 +112,6 @@ const Login = () => {
                                             <p>Register youself with google account</p>
                                         </div>
                                     </div>
-                                    {/* <div className='py-2 border px-3 cursor-pointer rounded-full '>
-                                        <FontAwesomeIcon icon={faSkype} size="lg" className='text-[#00AFF0]' />
-                                    </div> */}
                                 </div>
                                 <div className='text-center my-4'>
                                     <p className='text-sm'>Already have an account? <Link className='text-blue-700' to="/signup">Create new account?</Link></p>

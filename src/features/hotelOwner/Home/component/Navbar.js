@@ -64,14 +64,14 @@ const Navbar = () => {
     return (
         <>
             <nav className='bg-[#003580] relative py-6'>
-            <img src={heavenStay} 
-     className="h-[140px] absolute top-[-25px] px-3" 
-     alt="logo" />
+                <img src={heavenStay}
+                    className="h-[140px] absolute top-[-25px] px-3"
+                    alt="logo" />
                 <div className='flex items-center justify-between px-8 text-white'>
 
                     {/* Logo */}
                     <div></div>
-                    
+
 
                     {/* Desktop Menu */}
                     <div className='hidden lg:flex gap-8 items-center'>
@@ -109,47 +109,47 @@ const Navbar = () => {
                 {open && (
                     <div className="relative">
                         <div className="lg:hidden flex flex-col absolute top-7 right-0 h-screen w-[300px] bg-white text-[#003580] shadow-lg z-50">
-                        <Link to="/">
-                            <div className="border-b py-4 px-4 flex justify-start hover:bg-gray-100 cursor-pointer">
-                                <button className="w-full text-left font-medium">Home</button>
-                            </div>
+                            <Link to="/">
+                                <div className="border-b py-4 px-4 flex justify-start hover:bg-gray-100 cursor-pointer">
+                                    <button className="w-full text-left font-medium">Home</button>
+                                </div>
                             </Link>
                             <div className="border-b py-4 px-4 flex justify-start hover:bg-gray-100 cursor-pointer">
                                 <button className="w-full text-left font-medium">Support</button>
                             </div>
-                            
+
                             <Link to="display-rooms"><div className="border-b py-4 px-4 flex justify-start hover:bg-gray-100 cursor-pointer">
-                                
+
                                 <button className="w-full text-left font-medium">Display rooms</button>
                             </div> </Link>
-                            {userResponse ? 
+                            {userResponse ?
                                 <Link to="owner-profile"><div className="border-b py-4 px-4 flex justify-start hover:bg-gray-100 cursor-pointer">
-                                
-                                <button className="w-full text-left font-medium">Profile</button>
-                            </div> </Link>: ''}
+
+                                    <button className="w-full text-left font-medium">Profile</button>
+                                </div> </Link> : ''}
                             {userResponse ? (
                                 <div className='mt-6 flex flex-col space-y-3 px-4'>
-                                <button onClick={handleLogout}  className="text-[#003580] bg-gray-100 text-center py-3 rounded-lg font-medium hover:bg-gray-200 transition">Logout</button>
-                            </div>
-                            ) 
-                            : 
-                            (
-                                <div className="mt-6 flex flex-col space-y-3 px-4">
-                                <Link
-                                    to="/signup"
-                                    className="text-[#003580] bg-gray-100 text-center py-3 rounded-lg font-medium hover:bg-gray-200 transition"
-                                >
-                                    Register
-                                </Link>
-                                <Link
-                                    to="/login"
-                                    className="text-[#003580] bg-gray-100 text-center py-3 rounded-lg font-medium hover:bg-gray-200 transition"
-                                >
-                                    Sign in
-                                </Link>
-                            </div>   
-                            )}
-                            
+                                    <button onClick={handleLogout} className="text-[#003580] bg-gray-100 text-center py-3 rounded-lg font-medium hover:bg-gray-200 transition">Logout</button>
+                                </div>
+                            )
+                                :
+                                (
+                                    <div className="mt-6 flex flex-col space-y-3 px-4">
+                                        <Link
+                                            to="/signup"
+                                            className="text-[#003580] bg-gray-100 text-center py-3 rounded-lg font-medium hover:bg-gray-200 transition"
+                                        >
+                                            Register
+                                        </Link>
+                                        <Link
+                                            to="/login"
+                                            className="text-[#003580] bg-gray-100 text-center py-3 rounded-lg font-medium hover:bg-gray-200 transition"
+                                        >
+                                            Sign in
+                                        </Link>
+                                    </div>
+                                )}
+
                         </div>
                     </div>
 

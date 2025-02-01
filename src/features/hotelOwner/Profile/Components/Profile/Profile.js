@@ -2,23 +2,19 @@ import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import Card from '../../../DisplayRoom/components/Card'
-import { fetchAuthCookie, fetchToken } from '../../../../../common/cookie'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCustomerBookingsAsync, getOwnerHotelsAsync, selectAllBooking, selectOwnerHotel } from './profileSlice'
 import ProfileCard from './ProfileCard'
 import { Link } from 'react-router-dom'
 import { selectCookie, selectToken } from '../../../../auth/authSlice'
 import gift from "./ProfileImages/gift.png"
-import { selectUserResponse } from '../../../../auth/authSlice'
 import BookingCard from './BookingCard'
 const Profile = () => {
-
     const dispatch = useDispatch()
     const ownerHotels = useSelector(selectOwnerHotel)
     const userToken = useSelector(selectToken)
     const userCookie = useSelector(selectCookie)
     const allBookings = useSelector(selectAllBooking)
-    console.log("allBookings", allBookings)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [query, setQuery] = useState("")
@@ -27,7 +23,6 @@ const Profile = () => {
 
     const handleQuery = (e) => {
         setQuery(e.target.value)
-        console.log("query", query)
     }
 
 
@@ -56,7 +51,7 @@ const Profile = () => {
     };
 
     return (
-        <div>
+        <div className='mb-20'>
             <div className='flex  justfiy-center flex-col w-full mt-8'>
                 {/* top */}
                 <div className='mx-4 p-4 border-b-2 flex flex-wrap gap-6 justify-between items-end'>
@@ -100,8 +95,8 @@ const Profile = () => {
                             :
                             (<h2 className='text-3xl'>You can see all the booking made from account here</h2>)
                         }
-
-                        <from className="flex gap-3 flex-wrap">
+                        
+                        {userCookie.userType === 'hotelOwner' && <from className="flex gap-3 flex-wrap">
                             <div className="flex items-center border-2 rounded-lg bg-white p-2 mr-4">
                                 {" "}
                                 {/* Search bar appears */}
@@ -124,7 +119,7 @@ const Profile = () => {
                                 <option>Room number</option>
                             </select> */}
                             <button className='bg-[#003580] text-white px-4 py-1  rounded-lg transform transition duration-150 active:scale-95'>Search</button>
-                        </from>
+                        </from>}
 
                     </div>
 

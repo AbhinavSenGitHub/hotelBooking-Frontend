@@ -1,7 +1,7 @@
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useForm, useFieldArray } from 'react-hook-form';
 import { editRoomAsync } from './EditRoomSlice';
 import { selectToken } from '../../auth/authSlice';
@@ -11,6 +11,7 @@ const EditRoomDescription = () => {
     const [previousImage, setPreviousImage] = useState(location.roomImages)
     const [newImage, setNewImageURL] = useState([])
     const [count, setCount] = useState(location?.roomImages?.length)
+    const navigate = useNavigate()
     const [deletedImages, setDeletedImages] = useState([])
     const [newFile, setNewFile] = useState([])
     console.log("edit room:", location)
@@ -46,17 +47,18 @@ const EditRoomDescription = () => {
     });
 
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         const formattedData = {
             ...data,
             bathRoom: data.bathroom === 'Yes',
             deletedImages: deletedImages,
-            // keyPoints: data.keyPoints.map((text) => ({ text })), // Assuming keyPoints is an array of objects
         };
         console.log(formattedData);
 
-        dispatch(editRoomAsync({accessToken: userToken, roomData: formattedData, roomId: location._id}))
-
+        const response = await dispatch(editRoomAsync({accessToken: userToken, roomData: formattedData, roomId: location._id}))
+        if(response){
+            navigate('/owner-profile')
+        }
     };
 
     const handleImageInput = (e) => {
