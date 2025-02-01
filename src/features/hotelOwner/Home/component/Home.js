@@ -11,6 +11,7 @@ import Clients from './Clients'
 import LocationCard from './LocationCard'
 import { useSelector } from 'react-redux'
 import { selectCookie } from '../../../auth/authSlice'
+import Footer from './Footer'
 
 const Home = () => {
 
@@ -23,6 +24,19 @@ const Home = () => {
  const handNavigate = () => {
   navigate('/display-rooms')
  }
+
+ const handleClick = (item) => {
+  if(!user){
+    navigate("/login")
+  }else{
+    if(item === "roomBooking"){
+      navigate("/display-rooms")
+    }else{
+      navigate("/hotel-profile")
+    }
+  }
+ }
+
   return (
     <div className=''>
       <div className='h-auto xl:h-[500px] bg-[#003580] flex flex-wrap custom-919:flex-nowrap justify-around pt-[10vh]'>
@@ -36,8 +50,8 @@ const Home = () => {
           </div>
           {!user &&
             <div className='flex gap-4 my-3'>
-              <button className='bg-white text-[#003580] rounded-xl px-3 py-2 font-medium transform transition duration-150 active:scale-95'>Book a Room</button>
-              <button className='bg-white text-[#003580] rounded-xl px-3 py-2 font-medium transform transition duration-150 active:scale-95'>List your Hotel</button>
+              <button onClick={() => handleClick("roomBooking")} className='bg-white text-[#003580] rounded-xl px-3 py-2 font-medium transform transition duration-150 active:scale-95' >Book a Room</button>
+              <button onClick={() => handleClick("roomBooking")} className='bg-white text-[#003580] rounded-xl px-3 py-2 font-medium transform transition duration-150 active:scale-95'>List your Hotel</button>
             </div>
           }
         </div>
@@ -87,6 +101,7 @@ const Home = () => {
       <Clients />
       <LocationCard />
       <HotelCard />
+      <Footer/>
     </div>
   )
 }

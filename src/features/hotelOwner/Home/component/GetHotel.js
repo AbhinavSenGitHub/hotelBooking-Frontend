@@ -15,11 +15,11 @@ import { Link, useNavigate } from 'react-router-dom'
 const GetHotel = () => {
 
     const hotels = [
-        { image: asia, title: 'Best place in Aias', content: 'The best place in Aias offers breathtaking views, delicious food, friendly people, and unforgettable memories.' },
-        { image: japan, title: 'Ryokans in Japan', content: 'Ryokans in Japan provide traditional lodging experiences with tatami floors, onsen baths, and exquisite cuisine.' },
-        { image: wellness, title: 'Wellness Restreat', content: 'A wellness retreat offers relaxation, meditation, healthy meals, yoga, and spa treatments for rejuvenation.' },
-        { image: winter, title: 'Winter spots', content: 'Winter spots offer scenic snow-capped mountains, cozy cabins, skiing adventures, and festive holiday charm.' },
-        { image: christmas, title: 'Christmas in London', content: 'Christmas in London features dazzling lights, festive markets, ice skating rinks, and iconic holiday decorations.' },
+        { image: asia, title: 'Best Place in Aias', content: 'The best place in Aias offers breathtaking views, delicious food, friendly people, and unforgettable memories.', details: "The most spectacular destination in Aias, where breathtaking views captivate your soul, mouthwatering cuisine delights your taste buds, warm-hearted people make you feel at home, and every moment becomes an unforgettable memory to cherish forever." },
+        { image: japan, title: 'Ryokans in Japan', content: 'Ryokans in Japan provide traditional lodging experiences with tatami floors, onsen baths, and exquisite cuisine.', details: "Ryokans in Japan offer an authentic and serene traditional lodging experience, featuring elegant tatami-matted rooms, soothing onsen hot spring baths, and exquisite multi-course kaiseki cuisine, all wrapped in the warmth of Japanese hospitality." },
+        { image: wellness, title: 'Wellness Restreat', content: 'A wellness retreat offers relaxation, meditation, healthy meals, yoga, and spa treatments for rejuvenation.', details: "A wellness retreat is a sanctuary of peace and rejuvenation, where relaxation meets mindfulness through meditation, nutritious gourmet meals, revitalizing yoga sessions, and indulgent spa treatments, leaving you refreshed in body, mind, and spirit." },
+        { image: winter, title: 'Winter Spots', content: 'Winter spots offer scenic snow-capped mountains, cozy cabins, skiing adventures, and festive holiday charm.', details: "Winter destinations transform into magical wonderlands, boasting breathtaking snow-covered mountains, charming and cozy cabins, thrilling skiing and snowboarding adventures, and a festive atmosphere filled with twinkling lights and holiday cheer." },
+        { image: christmas, title: 'Christmas in London', content: 'Christmas in London features dazzling lights, festive markets, ice skating rinks, and iconic holiday decorations.', details: "Christmas in London is a mesmerizing celebration of joy and festivity, with dazzling light displays illuminating the city, enchanting Christmas markets offering seasonal delights, picturesque ice-skating rinks, and iconic holiday decorations adorning historic streets and landmarks." },
         // Add more items as needed
     ];
 
